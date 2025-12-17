@@ -1,0 +1,163 @@
+/**
+ * app/globals.css
+ * 
+ * Global styles for STEADY MVP
+ * - Dark base theme (black background)
+ * - Neon accent colors (pink, blue, green, purple, orange)
+ * - Custom scrollbars and animations
+ * - Wallet adapter default styles
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --neon-pink: #ff006e;
+  --neon-blue: #00d9ff;
+  --neon-green: #39ff14;
+  --neon-purple: #bf40bf;
+  --neon-orange: #ff6b35;
+}
+
+@layer base {
+  body {
+    @apply bg-black text-white;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      Roboto, sans-serif;
+
+    /* Scroll-based gradient background */
+    background: linear-gradient(
+      180deg,
+      #000000 0%,
+      #0a0015 25%,
+      #000a1a 50%,
+      #001a0a 75%,
+      #000000 100%
+    );
+    background-attachment: fixed;
+    background-size: 100% 300vh;
+    background-position: top;
+  }
+}
+
+@layer components {
+  /* Neon glow effect for cards and buttons */
+  .neon-glow-pink {
+    box-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
+  }
+
+  .neon-glow-blue {
+    box-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+  }
+
+  .neon-glow-green {
+    box-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
+  }
+
+  /* Gradient backgrounds */
+  .gradient-neon {
+    background: linear-gradient(
+      135deg,
+      var(--neon-pink),
+      var(--neon-purple),
+      var(--neon-blue)
+    );
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-900;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-neon-purple rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-neon-pink;
+  }
+}
+
+@layer utilities {
+  /* Text gradients */
+  .text-gradient-neon {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      90deg,
+      var(--neon-pink),
+      var(--neon-blue)
+    );
+  }
+
+  /* Animation utilities */
+  .pulse-neon {
+    animation: pulse-neon 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse-neon {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  /* Smooth fade-in animation */
+  .animate-fade-in {
+    animation: fade-in 1s ease-out;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Gradient animation for hero text */
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient-shift 8s ease infinite;
+  }
+
+  @keyframes gradient-shift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  /* Delay utilities for staggered animations */
+  .delay-1000 {
+    animation-delay: 1s;
+  }
+
+  .delay-2000 {
+    animation-delay: 2s;
+  }
+}
+
+/* Wallet Adapter Overrides */
+.wallet-adapter-button {
+  @apply bg-neon-pink hover:bg-neon-purple transition-colors;
+}
+
+.wallet-adapter-modal-wrapper {
+  @apply bg-black/90 backdrop-blur-sm;
+}
