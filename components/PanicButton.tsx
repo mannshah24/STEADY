@@ -14,10 +14,11 @@ import { useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useConnection } from "@solana/wallet-adapter-react";
 import { updateMode, toAnchorWallet, InvestmentMode } from "@/lib/anchor";
+import { setLifeModeWithNotification, type LifeMode } from "@/lib/lifeModeEngine";
 
 interface Props {
-  currentMode: "Safe" | "Balanced" | "Growth";
-  onModeChange: (mode: "Safe" | "Balanced" | "Growth") => void;
+  currentMode: LifeMode;
+  onModeChange: (mode: LifeMode) => void;
 }
 
 export default function PanicButton({ currentMode, onModeChange }: Props) {
@@ -33,38 +34,31 @@ export default function PanicButton({ currentMode, onModeChange }: Props) {
       return;
     }
 
-    if (currentMode === "Safe") {
-      alert("Already in Safe mode!");
-      return;
-    }
-
-    const anchorWallet = toAnchorWallet(wallet);
-    if (!anchorWallet) {
-      alert("Wallet not available");
+    if (currentMode === "panic") {
+      alert("Already in Panic mode - maximum protection active!");
       return;
     }
 
     setIsExecuting(true);
 
     try {
-      const signature = await updateMode(anchorWallet, InvestmentMode.Safe);
-
-      console.log("Emergency switch to Safe mode:", signature);
-      onModeChange("Safe");
+      // Set panic mode using life mode engine
+      setLifeModeWithNotification("panic");
+      onModeChange("panic");
       setShowConfirm(false);
 
       // Show success feedback
-      alert("✅ Portfolio moved to Safe mode!");
+      alert("✅ Panic mode activated! Maximum protection enabled.");
     } catch (err) {
       console.error("Panic mode error:", err);
-      alert("Failed to switch to Safe mode. Please try again.");
+      alert("Failed to activate panic mode. Please try again.");
     } finally {
       setIsExecuting(false);
     }
   };
 
-  // Don't show if already in Safe mode - show calm confirmation instead
-  if (currentMode === "Safe") {
+  // Don't show if already in panic mode - show calm confirmation instead
+  if (currentMode === "panic") {
     return (
       <div className="rounded-xl p-5 bg-gray-900/40 border border-gray-800/40">
         <div className="flex items-center gap-3">
@@ -107,7 +101,7 @@ export default function PanicButton({ currentMode, onModeChange }: Props) {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            {isExecuting ? "Protecting..." : "Activate Safe Mode"}
+            {isExecuting ? "Activating..." : "Activate Panic Mode"}
           </motion.button>
         </div>
       </motion.div>
@@ -127,12 +121,12 @@ export default function PanicButton({ currentMode, onModeChange }: Props) {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="text-center mb-5">
-              <span className="text-4xl mb-3 block">🛡️</span>
+              <span className="text-4xl mb-3 block">🚨</span>
               <h3 className="text-xl font-bold text-white mb-2">
-                Move to Safe Mode?
+                Activate Panic Mode?
               </h3>
               <p className="text-sm text-gray-400">
-                This will switch to maximum protection immediately.
+                This will switch to maximum protection immediately. Everything secured.
               </p>
             </div>
 

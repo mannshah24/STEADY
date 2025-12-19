@@ -45,6 +45,7 @@ import {
   onMarketEvent,
 } from "@/lib/marketLoop";
 import { addAlert } from "@/lib/alertEngine";
+import { getCurrentLifeMode, type LifeMode } from "@/lib/lifeModeEngine";
 
 export default function Home() {
   const [isActivated, setIsActivated] = useState(false);
@@ -91,9 +92,7 @@ function ActivatedDashboard() {
   const wallet = useWallet();
   const { connected, publicKey } = wallet;
 
-  const [currentMode, setCurrentMode] = useState<
-    "Safe" | "Balanced" | "Growth"
-  >("Safe");
+  const [currentMode, setCurrentMode] = useState<LifeMode>("growth");
   const [currentValue, setCurrentValue] = useState(0);
 
   // Start market monitoring loop when activated
@@ -125,7 +124,8 @@ function ActivatedDashboard() {
           ? await fetchPortfolio(anchorWallet)
           : null;
 
-        const mode = (portfolioAccount?.currentMode as any) || "Safe";
+        // Get current life mode from lifeModeEngine
+        const mode = getCurrentLifeMode();
         setCurrentMode(mode);
         setCurrentValue(totalValue);
       } catch (error) {
