@@ -9,10 +9,10 @@
  * This IS: "Tell STEADY how your life looks right now."
  *
  * EMOTIONAL IMPACT:
- * When judges see this, they should think:
+ * When people see this, they should think:
  * "This product understands humans, not just markets."
  *
- * DEMO MOMENT:
+ * EXPERIENCE:
  * Switching from Growth → Sleep Mode should feel like
  * "STEADY just became my guardian while I rest."
  */

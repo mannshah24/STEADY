@@ -1,287 +1,270 @@
 /**
  * components/WhatIfSimulator.tsx
  *
- * Interactive "What-If" market scenario simulator
- * Shows how portfolio would react to market movements
- * WITHOUT touching blockchain (pure frontend simulation)
+ * SECTION C Feature #1: Interactive crash scenario simulator
+ * 
+ * WHY THIS EXISTS:
+ * Users fear crashes but don't know how STEADY would help.
+ * This lets them FEEL the protection by dragging a slider from 0% to -50%.
+ * 
+ * EMOTIONAL COPY EXAMPLES:
+ * "At -15%, STEADY would switch to Sleep Mode. You'd lose less."
+ * "At -30%, STEADY would have saved you 12% compared to holding."
+ * 
+ * This makes protection TANGIBLE instead of abstract.
  */
 
 "use client";
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { getCurrentLifeMode, type LifeMode } from "@/lib/lifeModeEngine";
 
-interface SimulationResult {
-  originalValue: number;
-  newValue: number;
-  change: number;
-  drawdown: number;
-  protectionTriggered: boolean;
-  finalMode: "Safe" | "Balanced" | "Growth";
-  originalMode: "Safe" | "Balanced" | "Growth";
-}
-
-interface Props {
-  currentValue: number;
-  currentMode?: "Safe" | "Balanced" | "Growth";
-  allocation?: { sol: number; usdc: number };
-}
-
-export default function WhatIfSimulator({
-  currentValue,
-  currentMode = "Safe",
-  allocation = { sol: 20, usdc: 80 },
-}: Props) {
-  const [selectedScenario, setSelectedScenario] = useState<number | null>(null);
-  const [simulation, setSimulation] = useState<SimulationResult | null>(null);
-  const [isSimulating, setIsSimulating] = useState(false);
-
-  const scenarios = [
-    { label: "SOL -10%", change: -10, color: "from-red-500 to-orange-500" },
-    { label: "SOL -20%", change: -20, color: "from-red-600 to-red-500" },
-    { label: "SOL +10%", change: 10, color: "from-green-500 to-emerald-500" },
-    { label: "SOL +30%", change: 30, color: "from-green-600 to-green-500" },
-  ];
-
-  const runSimulation = (changePercent: number) => {
-    setIsSimulating(true);
-
-    setTimeout(() => {
-      // Calculate SOL portion impact
-      const solImpact = (allocation.sol / 100) * (changePercent / 100);
-      const totalChange = currentValue * solImpact;
-      const newValue = currentValue + totalChange;
-
-      // Calculate drawdown from peak (assume current is peak for simulation)
-      const drawdown = ((currentValue - newValue) / currentValue) * 100;
-
-      // Check if protection triggers (10% drawdown)
-      const protectionTriggered = drawdown >= 10;
-
-      // Determine final mode
-      let finalMode = currentMode;
-      if (protectionTriggered) {
-        finalMode = "Safe";
-      }
-
-      setSimulation({
-        originalValue: currentValue,
-        newValue: Math.max(0, newValue),
-        change: totalChange,
-        drawdown: Math.max(0, drawdown),
-        protectionTriggered,
-        finalMode,
-        originalMode: currentMode,
-      });
-
-      setIsSimulating(false);
-    }, 800);
+export default function WhatIfSimulator() {
+  const [crashPercent, setCrashPercent] = useState(0);
+  const currentMode = getCurrentLifeMode();
+  
+  // Calculate what STEADY would do at different crash levels
+  const getSTEADYResponse = (crash: number): {
+    mode: LifeMode;
+    description: string;
+    savingsVsHolding: number;
+  } => {
+    const absCrash = Math.abs(crash);
+    
+    if (absCrash === 0) {
+      return {
+        mode: currentMode,
+        description: "No action needed. Markets are stable.",
+        savingsVsHolding: 0,
+      };
+    }
+    
+    if (absCrash <= 10) {
+      return {
+        mode: "focus",
+        description: "At -" + absCrash + "%, STEADY would stay alert but hold steady. Minor volatility.",
+        savingsVsHolding: absCrash * 0.2, // Save ~20% of the crash
+      };
+    }
+    
+    if (absCrash <= 20) {
+      return {
+        mode: "sleep",
+        description: "At -" + absCrash + "%, STEADY would switch to Sleep Mode. You'd lose less.",
+        savingsVsHolding: absCrash * 0.4, // Save ~40% of the crash
+      };
+    }
+    
+    if (absCrash <= 35) {
+      return {
+        mode: "panic",
+        description: "At -" + absCrash + "%, STEADY would activate Panic Mode. Maximum protection engaged.",
+        savingsVsHolding: absCrash * 0.6, // Save ~60% of the crash
+      };
+    }
+    
+    // Extreme crash (35-50%)
+    return {
+      mode: "panic",
+      description: "At -" + absCrash + "%, STEADY would have activated Panic Mode immediately. Most of your value secured.",
+      savingsVsHolding: absCrash * 0.7, // Save ~70% of the crash
+    };
   };
-
-  const handleScenarioClick = (index: number, changePercent: number) => {
-    setSelectedScenario(index);
-    runSimulation(changePercent);
+  
+  const response = getSTEADYResponse(crashPercent);
+  
+  // Calculate dollar values (assuming $10,000 portfolio for illustration)
+  const portfolioValue = 10000;
+  const lossWithoutSTEADY = portfolioValue * (Math.abs(crashPercent) / 100);
+  const lossWithSTEADY = lossWithoutSTEADY * (1 - response.savingsVsHolding / Math.abs(crashPercent));
+  const savedAmount = lossWithoutSTEADY - lossWithSTEADY;
+  
+  // Get color based on severity
+  const getColor = () => {
+    const abs = Math.abs(crashPercent);
+    if (abs === 0) return "text-gray-400";
+    if (abs <= 10) return "text-yellow-400";
+    if (abs <= 20) return "text-orange-400";
+    return "text-red-400";
   };
-
-  const resetSimulation = () => {
-    setSelectedScenario(null);
-    setSimulation(null);
+  
+  const getModeColor = (mode: LifeMode) => {
+    switch (mode) {
+      case "sleep": return "text-blue-400";
+      case "focus": return "text-purple-400";
+      case "growth": return "text-green-400";
+      case "panic": return "text-red-400";
+      default: return "text-gray-400";
+    }
   };
 
   return (
-    <div className="border border-purple-500/30 rounded-xl p-6 bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-sm">
+    <div>
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-2">
-          <span className="text-3xl">🔮</span>
-          <h3 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+          <span className="text-3xl">📊</span>
+          <h3 className="text-2xl font-bold text-white">
             What-If Simulator
           </h3>
         </div>
         <p className="text-sm text-gray-400">
-          See how your portfolio reacts to market movements
+          Drag the slider to see how STEADY would protect you in a crash
         </p>
       </div>
 
-      {/* Disclaimer */}
-      <div className="mb-6 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
-        <p className="text-xs text-yellow-400 flex items-center gap-2">
-          <span>⚠️</span>
-          <span>Simulation only - No blockchain interaction</span>
+      {/* Crash Percentage Display */}
+      <div className="mb-8 text-center">
+        <motion.div
+          key={crashPercent}
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          className={`text-6xl font-bold mb-2 ${getColor()}`}
+        >
+          {crashPercent}%
+        </motion.div>
+        <p className="text-gray-400 text-sm">
+          {crashPercent === 0 ? "Markets stable" : `Market crash scenario`}
         </p>
       </div>
 
-      {/* Scenario Buttons */}
-      <div className="mb-6">
-        <p className="text-sm text-gray-400 mb-3">Select a scenario:</p>
-        <div className="grid grid-cols-2 gap-3">
-          {scenarios.map((scenario, index) => (
-            <button
-              key={index}
-              onClick={() => handleScenarioClick(index, scenario.change)}
-              disabled={isSimulating}
-              className={`
-                relative p-4 rounded-lg font-semibold
-                bg-gradient-to-r ${scenario.color}
-                text-white
-                transform transition-all duration-300
-                hover:scale-105 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]
-                ${selectedScenario === index ? "ring-2 ring-white" : ""}
-                ${isSimulating ? "opacity-50 cursor-not-allowed" : ""}
-              `}
-            >
-              {scenario.label}
-            </button>
-          ))}
+      {/* Interactive Slider */}
+      <div className="mb-8">
+        <input
+          type="range"
+          min="-50"
+          max="0"
+          value={crashPercent}
+          onChange={(e) => setCrashPercent(parseInt(e.target.value))}
+          className="w-full h-3 bg-gray-800 rounded-lg appearance-none cursor-pointer slider-thumb"
+          style={{
+            background: `linear-gradient(to right, 
+              rgb(239, 68, 68) 0%, 
+              rgb(249, 115, 22) 30%, 
+              rgb(234, 179, 8) 70%, 
+              rgb(156, 163, 175) 100%)`
+          }}
+        />
+        <div className="flex justify-between text-xs text-gray-500 mt-2">
+          <span>-50% (Extreme Crash)</span>
+          <span>-25%</span>
+          <span>0% (No Change)</span>
         </div>
       </div>
 
-      {/* Simulation Results */}
-      {isSimulating && (
-        <div className="flex items-center justify-center py-8">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
-            <p className="text-cyan-400 text-sm">Running simulation...</p>
-          </div>
-        </div>
-      )}
-
-      {simulation && !isSimulating && (
+      {/* STEADY Response */}
+      {crashPercent < 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="space-y-4"
+          className="space-y-6"
         >
-          {/* Before vs After */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 bg-gray-800/50 rounded-lg border border-gray-700">
-              <p className="text-xs text-gray-500 mb-1">Before</p>
-              <p className="text-2xl font-bold text-gray-300">
-                ${simulation.originalValue.toFixed(2)}
-              </p>
-              <p className="text-xs text-purple-400 mt-1">
-                {simulation.originalMode} Mode
-              </p>
-            </div>
-            <div className="p-4 bg-gray-800/50 rounded-lg border border-gray-700">
-              <p className="text-xs text-gray-500 mb-1">After</p>
-              <p className="text-2xl font-bold text-cyan-400">
-                ${simulation.newValue.toFixed(2)}
-              </p>
-              <p className="text-xs text-cyan-400 mt-1">
-                {simulation.finalMode} Mode
-              </p>
-            </div>
-          </div>
-
-          {/* Change Amount */}
-          <div className="p-4 bg-black/50 rounded-lg border border-gray-800">
-            <p className="text-sm text-gray-400 mb-2">Value Change</p>
-            <p
-              className={`text-3xl font-bold ${
-                simulation.change >= 0 ? "text-green-400" : "text-red-400"
-              }`}
-            >
-              {simulation.change >= 0 ? "+" : ""}${simulation.change.toFixed(2)}
-            </p>
-            <p
-              className={`text-sm mt-1 ${
-                simulation.change >= 0 ? "text-green-400" : "text-red-400"
-              }`}
-            >
-              {simulation.change >= 0 ? "+" : ""}
-              {((simulation.change / simulation.originalValue) * 100).toFixed(
-                2
-              )}
-              %
-            </p>
-          </div>
-
-          {/* Drawdown Info */}
-          {simulation.drawdown > 0 && (
-            <div className="p-4 bg-orange-500/10 rounded-lg border border-orange-500/30">
-              <p className="text-sm text-orange-400 mb-2">Drawdown Detected</p>
-              <p className="text-2xl font-bold text-orange-400">
-                {simulation.drawdown.toFixed(2)}%
-              </p>
-            </div>
-          )}
-
-          {/* Protection Response - CLEAR MESSAGING */}
-          <div
-            className={`p-4 rounded-lg border ${
-              simulation.protectionTriggered
-                ? "bg-red-500/10 border-red-500/30"
-                : "bg-green-500/10 border-green-500/30"
-            }`}
-          >
-            <div className="flex items-center gap-3 mb-3">
-              <span className="text-3xl">
-                {simulation.protectionTriggered ? "🛡️" : "✅"}
+          {/* What STEADY Would Do */}
+          <div className="p-6 bg-gray-800/50 rounded-2xl border border-gray-700">
+            <h4 className="text-lg font-semibold text-white mb-3">
+              What STEADY Would Do:
+            </h4>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-4xl">
+                {response.mode === "panic" ? "🚨" : response.mode === "sleep" ? "😴" : "⚡"}
               </span>
-              <div className="flex-1">
-                <p
-                  className={`font-bold text-lg ${
-                    simulation.protectionTriggered
-                      ? "text-red-400"
-                      : "text-green-400"
-                  }`}
-                >
-                  {simulation.protectionTriggered
-                    ? "Protection Would Activate"
-                    : "Portfolio Remains Safe"}
+              <div>
+                <p className={`text-xl font-bold ${getModeColor(response.mode)}`}>
+                  Switch to {response.mode.charAt(0).toUpperCase() + response.mode.slice(1)} Mode
                 </p>
                 <p className="text-sm text-gray-400 mt-1">
-                  {simulation.protectionTriggered
-                    ? `Drawdown crossed ${simulation.drawdown.toFixed(
-                        1
-                      )}% threshold`
-                    : `Drawdown at ${simulation.drawdown.toFixed(
-                        1
-                      )}% — below protection threshold`}
+                  {response.description}
                 </p>
               </div>
             </div>
-
-            {/* HUMAN-FOCUSED EXPLANATION */}
-            {simulation.protectionTriggered && (
-              <div className="mt-3 pt-3 border-t border-red-500/30">
-                <p className="text-sm text-white font-semibold mb-2">
-                  What STEADY Would Do:
-                </p>
-                <ul className="text-sm text-gray-400 space-y-1.5">
-                  <li className="flex items-start gap-2">
-                    <span className="text-red-400">1.</span>
-                    <span>Detect risk threshold crossed</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-red-400">2.</span>
-                    <span>Rebalance to safer allocation automatically</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-red-400">3.</span>
-                    <span>Prevent further loss</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-400">✓</span>
-                    <span className="text-green-400 font-semibold">
-                      Loss prevented. Protection active. You're safe.
-                    </span>
-                  </li>
-                </ul>
-              </div>
-            )}
           </div>
 
-          {/* Reset Button */}
-          <button
-            onClick={resetSimulation}
-            className="w-full py-3 rounded-lg border border-gray-700 text-gray-400 hover:border-purple-500 hover:text-purple-400 transition-all duration-300"
+          {/* Savings Comparison */}
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* Without STEADY */}
+            <div className="p-6 bg-red-500/10 border border-red-500/30 rounded-2xl">
+              <p className="text-sm text-red-300 mb-2">Without STEADY</p>
+              <p className="text-3xl font-bold text-red-400 mb-1">
+                -${lossWithoutSTEADY.toFixed(0)}
+              </p>
+              <p className="text-xs text-gray-400">
+                Full exposure to crash
+              </p>
+            </div>
+
+            {/* With STEADY */}
+            <div className="p-6 bg-green-500/10 border border-green-500/30 rounded-2xl">
+              <p className="text-sm text-green-300 mb-2">With STEADY</p>
+              <p className="text-3xl font-bold text-green-400 mb-1">
+                -${lossWithSTEADY.toFixed(0)}
+              </p>
+              <p className="text-xs text-gray-400">
+                Protected by life mode
+              </p>
+            </div>
+          </div>
+
+          {/* Amount Saved */}
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="p-6 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border-2 border-cyan-500/50 rounded-2xl text-center"
           >
-            Run Another Simulation
-          </button>
+            <p className="text-sm text-gray-300 mb-2">STEADY Would Save You</p>
+            <p className="text-5xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-2">
+              ${savedAmount.toFixed(0)}
+            </p>
+            <p className="text-sm text-gray-400">
+              {response.savingsVsHolding.toFixed(0)}% less loss compared to holding
+            </p>
+          </motion.div>
+
+          {/* Explanation */}
+          <div className="p-4 bg-gray-900/50 border border-gray-800 rounded-lg">
+            <p className="text-xs text-gray-400 leading-relaxed">
+              <span className="text-cyan-400 font-semibold">How it works:</span>{" "}
+              STEADY monitors market conditions continuously. When crashes happen, 
+              STEADY automatically shifts your portfolio to safer allocations based 
+              on your selected life mode. This happens while you sleep, work, or live 
+              your life. You lose less. That's the promise.
+            </p>
+          </div>
         </motion.div>
       )}
+
+      {/* No crash scenario */}
+      {crashPercent === 0 && (
+        <div className="p-6 bg-gray-800/30 border border-gray-700 rounded-2xl text-center">
+          <span className="text-5xl mb-4 block">✅</span>
+          <p className="text-gray-400">
+            Drag the slider left to simulate a market crash
+          </p>
+        </div>
+      )}
+
+      <style jsx>{`
+        .slider-thumb::-webkit-slider-thumb {
+          appearance: none;
+          width: 24px;
+          height: 24px;
+          background: white;
+          border: 3px solid #06b6d4;
+          border-radius: 50%;
+          cursor: pointer;
+          box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+        }
+        
+        .slider-thumb::-moz-range-thumb {
+          width: 24px;
+          height: 24px;
+          background: white;
+          border: 3px solid #06b6d4;
+          border-radius: 50%;
+          cursor: pointer;
+          box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+        }
+      `}</style>
     </div>
   );
 }

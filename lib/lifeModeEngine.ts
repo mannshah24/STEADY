@@ -51,8 +51,8 @@ export const LIFE_MODES: Record<LifeMode, LifeModeConfig> = {
     id: "sleep",
     emoji: "🌙",
     label: "Sleep Mode",
-    tagline: "You rest. We watch.",
-    description: "Enhanced protection while you're offline. Crypto doesn't sleep — but you can, safely.",
+    tagline: "Sleep peacefully. STEADY watches for you.",
+    description: "Sleep peacefully. STEADY watches for you.",
     
     drawdownThreshold: 7, // Trigger at 7% instead of 10%
     riskTolerance: "conservative",
@@ -68,8 +68,8 @@ export const LIFE_MODES: Record<LifeMode, LifeModeConfig> = {
     id: "focus",
     emoji: "📚",
     label: "Focus Mode",
-    tagline: "You handle life. We handle risk.",
-    description: "Protection while you're busy with work, school, or travel. Capital preservation priority.",
+    tagline: "When life gets busy, STEADY protects you.",
+    description: "When life gets busy, STEADY protects you.",
     
     drawdownThreshold: 8, // Trigger at 8%
     riskTolerance: "conservative",
@@ -85,8 +85,8 @@ export const LIFE_MODES: Record<LifeMode, LifeModeConfig> = {
     id: "growth",
     emoji: "⚡",
     label: "Growth Mode",
-    tagline: "You're confident. We adapt.",
-    description: "Standard protection for when you're actively engaged and ready for calculated growth.",
+    tagline: "When you're ready to grow, STEADY adapts safely.",
+    description: "When you're ready to grow, STEADY adapts safely.",
     
     drawdownThreshold: 10, // Standard 10%
     riskTolerance: "aggressive",
@@ -102,8 +102,8 @@ export const LIFE_MODES: Record<LifeMode, LifeModeConfig> = {
     id: "panic",
     emoji: "🚨",
     label: "Panic Mode",
-    tagline: "Everything protected now.",
-    description: "Immediate maximum safety. Use when you need peace of mind right now.",
+    tagline: "Emergency safeguard. Everything protected now.",
+    description: "Emergency safeguard. Everything protected now.",
     
     drawdownThreshold: 0, // Immediate protection
     riskTolerance: "conservative",

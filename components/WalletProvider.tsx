@@ -24,7 +24,7 @@ export default function WalletProvider({
 }: {
   children: React.ReactNode;
 }) {
-  // Configure wallet adapters (Phantom only for MVP)
+  // Configure wallet adapters (Phantom support)
   const wallets = useMemo(() => [new PhantomWalletAdapter()], []);
 
   // Better error handling

@@ -2,7 +2,7 @@
  * components/RiskMeter.tsx
  *
  * Visual risk indicator (Green/Yellow/Red)
- * Gives judges instant "health check" vibe
+ * Gives instant "health check" vibe
  *
  * UPDATED: Now shows live monitoring indicator with subtle pulse
  */

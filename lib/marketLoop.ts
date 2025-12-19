@@ -223,7 +223,7 @@ async function evaluateMarket() {
 
 /**
  * Fetch current SOL price
- * Try Pyth oracle, fallback to mock data for demo
+ * Try Pyth oracle, fallback to simulated data for testing
  */
 async function fetchCurrentPrice(): Promise<number> {
   try {

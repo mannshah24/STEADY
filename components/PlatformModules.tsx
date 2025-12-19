@@ -1,9 +1,9 @@
 /**
  * components/PlatformModules.tsx
  *
- * Display of STEADY platform modules
- * Shows active modules and coming soon features
- * Creates illusion of scale and modularity
+ * Display of STEADY platform features
+ * Shows active features and coming soon capabilities
+ * Creates sense of scale and comprehensive protection
  */
 
 "use client";
@@ -66,10 +66,10 @@ export default function PlatformModules() {
         className="text-center mb-12"
       >
         <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-          Platform Modules
+          Platform Features
         </h2>
         <p className="text-gray-400 text-lg">
-          Modular risk management infrastructure for Solana
+          Comprehensive risk management for Solana
         </p>
       </motion.div>
 

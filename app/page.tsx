@@ -3,27 +3,38 @@
  *
  * STEADY - Life-Aware Crypto Protection
  *
- * UI HIERARCHY (Decluttered & Calm):
+ * MANDATORY UI HIERARCHY (SECTION A from spec):
  *
- * PRIMARY LAYER (Always visible, emotional, clear):
- *   - Hero Status: Life Mode + Heartbeat + Reassurance
+ * TOP LAYER (Always visible, VERY emotional, life-focused):
+ *   - Life Mode Panel: Huge, emotional, human language
+ *   - Heartbeat Status: Shows STEADY is alive and watching
+ *   - Panic Button: One-click emergency protection
  *
- * SECONDARY LAYER (Informational but quiet):
- *   - Status Cards: Portfolio value, Risk state, Recommendation
+ * MID LAYER (Secondary info, quick-glance):
+ *   - AI Advisor Card: Plain English recommendations (NO jargon)
+ *   - Risk Summary Card: Human language risk state (NOT "volatility 0.23")
  *
- * TERTIARY LAYER (Tucked away, expandable):
- *   - Details Tabs: Activity log, Timeline, Transparency, FAQ
+ * BOTTOM LAYER (Expandable/Collapsible tertiary details):
+ *   - Guardian Alerts History
+ *   - Reasoning Stream (what STEADY is thinking)
+ *   - Protection Timeline
+ *   - Transparency Panel (non-custodial proof)
+ *   - Why STEADY Exists
+ *   - Life Insights
+ *   - Crash Replay Simulator
  *
- * DESIGN PHILOSOPHY:
- * STEADY should feel like a calm guardian, not a trading terminal.
- * Whitespace is intentional. Silence is valuable.
- * Every element earns its place on screen.
+ * DESIGN RULES (SECTION F from spec):
+ * - Dark, premium UI with neon accents
+ * - Calm guardian tone (not hyper/shouty)
+ * - Human language ONLY (no "algorithmic", "backtest", "MVP", "demo")
+ * - Must feel ALIVE with continuous updates
+ * - Must NOT feel boring, empty, or static
  */
 
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Navbar from "@/components/Navbar";
 import HeroStatus from "@/components/HeroStatus";
@@ -35,6 +46,11 @@ import GuardianAlerts from "@/components/GuardianAlerts";
 import ReasoningStream from "@/components/ReasoningStream";
 import WhySteadyExists from "@/components/WhySteadyExists";
 import NonCustodialProof from "@/components/NonCustodialProof";
+import AIAdvisor from "@/components/AIAdvisor";
+import RiskSummary from "@/components/RiskSummary";
+import LifeInsights from "@/components/LifeInsights";
+import CrashReplay from "@/components/CrashReplay";
+import WhatIfSimulator from "@/components/WhatIfSimulator";
 import { fetchPortfolio, toAnchorWallet } from "@/lib/anchor";
 import { getBalance } from "@/lib/solana";
 import { getSolUsdPrice } from "@/lib/pyth";
@@ -154,45 +170,41 @@ function ActivatedDashboard() {
 
       {/* 
         ================================================================
-        MAIN CONTENT - LIVING GUARDIAN ARCHITECTURE
+        EXACT HIERARCHY from SECTION A
         ================================================================
         
-        DESIGN PHILOSOPHY:
-        STEADY must feel ALIVE, not static.
-        It must feel like a GUARDIAN, not a dashboard.
-        It must build TRUST through transparency.
-        It must communicate in HUMAN language.
+        TOP: Life Mode Panel + Heartbeat (Always visible, emotional)
+        MID: AI Advisor + Risk Summary (Secondary, 2-column grid)
+        BOTTOM: Expandable sections (Tertiary, collapsible)
         
-        HIERARCHY:
-        PRIMARY - Always visible, emotional, reassuring
-        SECONDARY - Quick-glance information cards
-        TERTIARY - Deep-dive expandable sections
+        WHY THIS STRUCTURE:
+        - TOP grabs attention, communicates core value instantly
+        - MID provides actionable intelligence without overwhelming
+        - BOTTOM allows curious users to dive deep without cluttering
+        
+        This hierarchy makes STEADY feel:
+        ✅ ALIVE (continuous heartbeat updates)
+        ✅ EXCITING (new features: What-If, Insights, Crash Replay)
+        ✅ TRUSTWORTHY (transparency panel, reasoning stream)
+        ❌ NOT boring, empty, static, or generic
       */}
       <main className="relative z-10 container mx-auto px-4 py-8 max-w-7xl">
-        {/* 
-          ================================================================
-          PRIMARY LAYER: Living System Status
-          
-          PHASE 2: HEARTBEAT - Shows STEADY is alive and watching
-          WHY: Builds trust. Makes platform feel like active guardian.
-          ================================================================
-        */}
-        <section className="mb-8">
-          <HeartbeatMonitor />
-        </section>
+        
+        {/* ============================================================
+            TOP LAYER: Life Mode + Heartbeat + Panic Button
+            WHY: This is THE experience. Life-aware protection is the 
+            entire reason STEADY exists. Must be huge and emotional.
+            ============================================================ */}
+        <section className="mb-12">
+          {/* Heartbeat Status - Shows STEADY is alive and watching */}
+          <div className="mb-6">
+            <HeartbeatMonitor />
+          </div>
 
-        {/* 
-          ================================================================
-          PRIMARY LAYER: Life Mode + Portfolio + Protection
-          
-          PHASE 3: Life Modes feel human and unavoidable
-          WHY: This is THE core value prop. Life-aware protection.
-          ================================================================
-        */}
-        <section id="protection" className="mb-12 scroll-mt-24">
+          {/* Life Mode + Portfolio (3:2 ratio as per original design) */}
           <div className="grid lg:grid-cols-5 gap-8 items-start">
-            {/* LEFT: Life Mode Section (3/5 width) */}
-            <div className="lg:col-span-3 space-y-6">
+            {/* LEFT: Life Mode Panel (3/5 width) - VERY BIG, VERY EMOTIONAL */}
+            <div className="lg:col-span-3">
               <HeroStatus onModeChange={setCurrentMode} />
             </div>
 
@@ -207,47 +219,33 @@ function ActivatedDashboard() {
           </div>
         </section>
 
-        {/* 
-          ================================================================
-          SECONDARY LAYER: Guardian Intelligence
-          
-          PHASE 4 & 5: Alerts + Reasoning
-          WHY: Shows what STEADY sees and thinks. Builds psychological trust.
-          ================================================================
-        */}
+        {/* ============================================================
+            MID LAYER: AI Advisor + Risk Summary
+            WHY: Quick-glance intelligence. Plain English answers to 
+            "What should I do?" and "Am I safe?" without jargon.
+            ============================================================ */}
         <section className="mb-12">
           <div className="grid lg:grid-cols-2 gap-8">
-            {/* PHASE 4: Guardian Alerts */}
-            <div className="bg-gray-900/40 backdrop-blur-sm border border-gray-800/50 rounded-2xl p-6">
-              <GuardianAlerts />
-            </div>
+            {/* AI Advisor Card - Plain English recommendations */}
+            <AIAdvisor />
 
-            {/* PHASE 5: Reasoning Stream */}
-            <div className="bg-gray-900/40 backdrop-blur-sm border border-gray-800/50 rounded-2xl p-6">
-              <ReasoningStream />
-            </div>
+            {/* Risk Summary Card - Human language risk state */}
+            <RiskSummary />
           </div>
         </section>
 
-        {/* 
-          ================================================================
-          TERTIARY LAYER: Trust & Education
-          
-          PHASE 7: Competition Crushers
-          WHY: Establishes STEADY as inevitable, not experimental
-          ================================================================
-        */}
-        <section className="mb-12 space-y-12">
-          {/* Why STEADY Exists */}
-          <WhySteadyExists />
+        {/* ============================================================
+            BOTTOM LAYER: Expandable/Collapsible Sections
+            WHY: Power users want details. Casual users want simplicity.
+            This gives both without cluttering the main experience.
+            ============================================================ */}
+        <ExpandableSections />
 
-          {/* Non-Custodial Proof */}
-          <NonCustodialProof />
-        </section>
       </main>
 
       {/* 
         FOOTER: Professional, Trustworthy, Human
+        WHY: Reinforces legitimacy and sets responsible expectations.
       */}
       <footer className="relative z-10 border-t border-gray-800/50 bg-black/30 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-12 max-w-7xl">
@@ -256,11 +254,10 @@ function ActivatedDashboard() {
               STEADY
             </h3>
             <p className="text-sm text-gray-400 max-w-2xl mx-auto leading-relaxed">
-              A life-aware, non-custodial crypto protection platform that
-              protects users when they're asleep, busy, emotional, or offline.
+              Life-aware crypto protection. Sleep peacefully while STEADY watches for you.
             </p>
             <div className="flex items-center justify-center gap-6 text-xs text-gray-500">
-              <span>Non-custodial protection</span>
+              <span>Non-custodial</span>
               <span>•</span>
               <span>Always transparent</span>
               <span>•</span>
@@ -268,11 +265,154 @@ function ActivatedDashboard() {
             </div>
             <p className="text-xs text-gray-600 max-w-lg mx-auto pt-4 border-t border-gray-800/50 mt-6">
               STEADY reduces downside risk. It does not guarantee profits.
-              Crypto is inherently volatile. Invest responsibly.
+              Crypto is volatile. Invest responsibly.
             </p>
           </div>
         </div>
       </footer>
     </div>
+  );
+}
+
+/**
+ * ExpandableSections - Collapsible BOTTOM LAYER
+ * 
+ * WHY THIS EXISTS:
+ * Some users want to dive deep. Others just want to see their protection status.
+ * This collapsible section gives power users access to details without cluttering
+ * the main experience. Each section expands individually.
+ * 
+ * INCLUDES:
+ * - Guardian Alerts History
+ * - Reasoning Stream (what STEADY is thinking)
+ * - Life Insights (emotional intelligence about usage patterns)
+ * - What-If Simulator (test scenarios)
+ * - Crash Replay (storytelling: what STEADY saved you from)
+ * - Why STEADY Exists (problem statement)
+ * - Transparency Panel (non-custodial proof)
+ */
+function ExpandableSections() {
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
+
+  const sections = [
+    {
+      id: "alerts",
+      title: "Guardian Alerts",
+      icon: "🔔",
+      description: "See what STEADY has noticed",
+      component: <GuardianAlerts />,
+    },
+    {
+      id: "reasoning",
+      title: "AI Thinking",
+      icon: "🧠",
+      description: "What STEADY is evaluating right now",
+      component: <ReasoningStream />,
+    },
+    {
+      id: "insights",
+      title: "Life Insights",
+      icon: "💡",
+      description: "How you've been using STEADY",
+      component: <LifeInsights />,
+    },
+    {
+      id: "whatif",
+      title: "What-If Simulator",
+      icon: "📊",
+      description: "Test different crash scenarios",
+      component: <WhatIfSimulator />,
+    },
+    {
+      id: "crash",
+      title: "Crash Replay",
+      icon: "⏮️",
+      description: "See how STEADY would have protected you",
+      component: <CrashReplay />,
+    },
+    {
+      id: "why",
+      title: "Why STEADY Exists",
+      icon: "❓",
+      description: "The problem we're solving",
+      component: <WhySteadyExists />,
+    },
+    {
+      id: "proof",
+      title: "Transparency",
+      icon: "🔍",
+      description: "Verify everything is non-custodial",
+      component: <NonCustodialProof />,
+    },
+  ];
+
+  const toggleSection = (id: string) => {
+    setExpandedSection(expandedSection === id ? null : id);
+  };
+
+  return (
+    <section className="mb-12 space-y-4">
+      {/* Section Header */}
+      <div className="text-center mb-8">
+        <h2 className="text-2xl font-bold text-white mb-2">
+          Dive Deeper
+        </h2>
+        <p className="text-gray-400 text-sm">
+          Curious about the details? Expand any section below.
+        </p>
+      </div>
+
+      {/* Collapsible Sections */}
+      <div className="space-y-3">
+        {sections.map((section) => (
+          <div
+            key={section.id}
+            className="bg-gray-900/40 backdrop-blur-sm border border-gray-800/50 rounded-2xl overflow-hidden"
+          >
+            {/* Section Header - Clickable */}
+            <button
+              onClick={() => toggleSection(section.id)}
+              className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-800/30 transition-colors"
+            >
+              <div className="flex items-center gap-4">
+                <span className="text-2xl">{section.icon}</span>
+                <div className="text-left">
+                  <h3 className="text-lg font-semibold text-white">
+                    {section.title}
+                  </h3>
+                  <p className="text-sm text-gray-400">
+                    {section.description}
+                  </p>
+                </div>
+              </div>
+              <motion.div
+                animate={{ rotate: expandedSection === section.id ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+                className="text-gray-400"
+              >
+                ▼
+              </motion.div>
+            </button>
+
+            {/* Section Content - Expandable */}
+            <AnimatePresence>
+              {expandedSection === section.id && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="border-t border-gray-800/50"
+                >
+                  <div className="p-6">
+                    {section.component}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }

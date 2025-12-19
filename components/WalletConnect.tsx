@@ -2,7 +2,7 @@
  * components/WalletConnect.tsx
  *
  * Premium Phantom wallet connection component
- * Designed for hackathon judges - clean, modern, and professional
+ * Clean, modern, and professional interface
  */
 
 "use client";

@@ -32,7 +32,7 @@ export function activateSteady(): void {
 }
 
 /**
- * Reset STEADY activation (for demo/testing purposes)
+ * Reset STEADY activation (for testing purposes)
  */
 export function resetSteady(): void {
   if (typeof window === "undefined") return;

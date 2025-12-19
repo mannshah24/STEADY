@@ -40,6 +40,20 @@ export default function ReasoningStream() {
 
   // Generate reasoning logs based on market updates
   useEffect(() => {
+    // Initial reasoning on mount
+    const initialState: MarketState = {
+      currentPrice: 200,
+      previousPrice: 200,
+      peakPrice: 200,
+      priceChange: 0,
+      drawdown: 0,
+      volatility: 0.15,
+      riskLevel: "low",
+      lastUpdate: Date.now(),
+    };
+    simulateReasoning(initialState);
+
+    // Subscribe to market updates
     const unsubscribe = onMarketStateUpdate((state: MarketState) => {
       simulateReasoning(state);
     });
@@ -160,10 +174,14 @@ export default function ReasoningStream() {
               animate={{ opacity: 1 }}
               className="text-center py-6 text-gray-500 text-sm"
             >
-              <div className="w-10 h-10 rounded-full bg-gray-800/50 flex items-center justify-center mx-auto mb-2">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                className="w-10 h-10 rounded-full bg-gray-800/50 flex items-center justify-center mx-auto mb-2"
+              >
                 <span className="text-xl">🧠</span>
-              </div>
-              Waiting for first market evaluation...
+              </motion.div>
+              Analyzing market conditions...
             </motion.div>
           ) : (
             logs.map((log) => (

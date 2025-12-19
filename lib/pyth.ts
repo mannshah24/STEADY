@@ -10,12 +10,12 @@
  * - Decentralized: No single point of failure for price feeds
  * - STEADY uses Pyth for portfolio valuation and downside protection triggers
  * 
- * NOTE: For MVP demo, using mock price data
+ * NOTE: Currently using simulated price data for testing
  * TODO: Integrate real Pyth price feeds after installing @pythnetwork/client
  */
 
 // ============================================================================
-// Mock Price Data (for demo)
+// Simulated Price Data (for testing)
 // ============================================================================
 
 /**
@@ -33,15 +33,15 @@
  */
 export async function getSolUsdPrice(): Promise<number | null> {
   try {
-    // Mock price for demo (in production, fetch from Pyth)
+    // Simulated price for testing (in production, fetch from Pyth)
     // TODO: Replace with real Pyth oracle integration
     // const connection = new Connection(DEVNET_RPC);
     // const pythClient = new PythHttpClient(connection, getPythProgramKeyForCluster("devnet"));
     // const data = await pythClient.getData();
     
-    // Return mock SOL price for demo
-    const mockPrice = 200 + Math.random() * 20; // $200-220 range
-    return Number(mockPrice.toFixed(2));
+    // Return simulated SOL price for testing
+    const simulatedPrice = 200 + Math.random() * 20; // $200-220 range
+    return Number(simulatedPrice.toFixed(2));
   } catch (error) {
     console.error("Failed to fetch SOL/USD price:", error);
     return null;

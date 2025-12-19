@@ -2,7 +2,7 @@
  * components/RebalanceAnimation.tsx
  *
  * 🚨 DOWNSIDE PROTECTION ANIMATION 🚨
- * The hackathon WOW moment - shows automatic protection triggering
+ * Shows automatic protection triggering in action
  * When portfolio drops 10%, the system switches to Safe mode
  */
 
@@ -54,7 +54,7 @@ export default function RebalanceAnimation() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      {/* Demo Trigger Button */}
+      {/* Trigger Button */}
       {!isProtecting && (
         <motion.button
           onClick={triggerProtection}
@@ -62,7 +62,7 @@ export default function RebalanceAnimation() {
           whileTap={{ scale: 0.98 }}
           className="w-full bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-bold py-5 rounded-xl transition-all mb-8 shadow-[0_0_30px_rgba(239,68,68,0.3)]"
         >
-          🚨 Simulate Downside Protection (Demo)
+          🚨 Simulate Downside Protection
         </motion.button>
       )}
 

@@ -2,7 +2,7 @@
  * components/ProtectionTimeline.tsx
  *
  * Visual timeline showing protection events
- * Turns logic into a story judges can follow
+ * Turns logic into a story you can follow
  *
  * UPDATED: Now auto-populates from market loop events and alerts
  * Timeline tells a story over time
