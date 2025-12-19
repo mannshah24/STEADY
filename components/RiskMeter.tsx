@@ -132,9 +132,7 @@ export default function RiskMeter({ mode, currentValue, peakValue }: Props) {
             Peace of Mind Score
           </h3>
         </div>
-        <p className="text-sm text-gray-400">
-          How protected you are right now
-        </p>
+        <p className="text-sm text-gray-400">How protected you are right now</p>
       </div>
 
       {/* Circular Risk Meter */}

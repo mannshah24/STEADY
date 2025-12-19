@@ -13,6 +13,11 @@ import { motion } from "framer-motion";
 import { fetchPortfolio, toAnchorWallet } from "@/lib/anchor";
 import { getBalance } from "@/lib/solana";
 import { getSolUsdPrice } from "@/lib/pyth";
+import {
+  getMarketState,
+  onMarketStateUpdate,
+  type MarketState,
+} from "@/lib/marketLoop";
 
 interface PortfolioData {
   totalValue: number;
@@ -31,6 +36,24 @@ export default function PortfolioCard() {
     mode: "Safe",
     allocation: { sol: 0, usdc: 0 },
   });
+  const [marketState, setMarketState] = useState<MarketState>({
+    currentPrice: 210,
+    previousPrice: 210,
+    peakPrice: 210,
+    priceChange: 0,
+    drawdown: 0,
+    volatility: 0,
+    riskLevel: "low",
+    lastUpdate: Date.now(),
+  });
+
+  // Subscribe to market updates for risk display
+  useEffect(() => {
+    const unsubscribe = onMarketStateUpdate((state: MarketState) => {
+      setMarketState(state);
+    });
+    return unsubscribe;
+  }, []);
 
   // Fetch portfolio data from Solana program
   useEffect(() => {
@@ -130,10 +153,10 @@ export default function PortfolioCard() {
   return (
     <div className="border border-purple-500/30 rounded-xl p-6 bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-sm shadow-[0_0_30px_rgba(168,85,247,0.15)]">
       {/* Header: Total Value */}
-      <div className="mb-6">
-        <p className="text-sm text-gray-500 mb-1">What You're Protecting</p>
-        <div className="flex items-baseline gap-1 flex-wrap">
-          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+      <div className="mb-4">
+        <p className="text-xs text-gray-500 mb-1">What You're Protecting</p>
+        <div className="flex items-baseline gap-2 flex-wrap">
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             $
             {portfolio.totalValue.toLocaleString("en-US", {
               minimumFractionDigits: 2,
@@ -151,131 +174,136 @@ export default function PortfolioCard() {
       </div>
 
       {/* Allocation Section */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between mb-2">
-          <p className="text-sm font-semibold text-gray-400">
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <p className="text-xs font-semibold text-gray-400">
             Asset Allocation
           </p>
-          <p className="text-xs text-gray-500">Protected by 10% downside</p>
+          <p className="text-[10px] text-gray-500">10% protected</p>
         </div>
 
         {/* SOL Allocation Bar */}
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <motion.div
-                className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
+            <div className="flex items-center gap-1.5">
+              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[10px] font-bold">
                 SOL
-              </motion.div>
-              <span className="text-sm font-medium text-gray-300">Solana</span>
+              </div>
+              <span className="text-xs font-medium text-gray-300">Solana</span>
             </div>
-            <motion.span
-              key={`sol-${portfolio.allocation.sol}`}
-              initial={{ scale: 1.2, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="text-lg font-bold text-purple-400"
-            >
+            <span className="text-sm font-bold text-purple-400">
               {portfolio.allocation.sol}%
-            </motion.span>
+            </span>
           </div>
 
           {/* Progress Bar */}
-          <div className="h-3 bg-gray-800 rounded-full overflow-hidden relative">
+          <div className="h-2 bg-gray-800 rounded-full overflow-hidden relative">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${portfolio.allocation.sol}%` }}
-              transition={{
-                duration: 0.8,
-                ease: "easeOut",
-                type: "spring",
-                stiffness: 100,
-                damping: 15,
-              }}
-              className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-[0_0_15px_rgba(168,85,247,0.6)]"
-            />
-            {/* Shimmer effect */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-              animate={{ x: ["-100%", "200%"] }}
-              transition={{
-                repeat: Infinity,
-                duration: 2,
-                ease: "linear",
-              }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-[0_0_10px_rgba(168,85,247,0.4)]"
             />
           </div>
         </div>
 
         {/* USDC Allocation Bar */}
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <motion.div
-                className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-xs font-bold"
-                whileHover={{ scale: 1.1, rotate: -5 }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
+            <div className="flex items-center gap-1.5">
+              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-[10px] font-bold">
                 USDC
-              </motion.div>
-              <span className="text-sm font-medium text-gray-300">
+              </div>
+              <span className="text-xs font-medium text-gray-300">
                 USD Coin
               </span>
             </div>
-            <motion.span
-              key={`usdc-${portfolio.allocation.usdc}`}
-              initial={{ scale: 1.2, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="text-lg font-bold text-cyan-400"
-            >
+            <span className="text-sm font-bold text-cyan-400">
               {portfolio.allocation.usdc}%
-            </motion.span>
+            </span>
           </div>
 
           {/* Progress Bar */}
-          <div className="h-3 bg-gray-800 rounded-full overflow-hidden relative">
+          <div className="h-2 bg-gray-800 rounded-full overflow-hidden relative">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${portfolio.allocation.usdc}%` }}
-              transition={{
-                duration: 0.8,
-                ease: "easeOut",
-                type: "spring",
-                stiffness: 100,
-                damping: 15,
-              }}
-              className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full shadow-[0_0_15px_rgba(6,182,212,0.6)]"
-            />
-            {/* Shimmer effect */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-              animate={{ x: ["-100%", "200%"] }}
-              transition={{
-                repeat: Infinity,
-                duration: 2,
-                ease: "linear",
-                delay: 0.5,
-              }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full shadow-[0_0_10px_rgba(6,182,212,0.4)]"
             />
           </div>
         </div>
       </div>
 
-      {/* Quick Stats Footer */}
-      <div className="mt-6 pt-4 border-t border-gray-800 grid grid-cols-2 gap-4">
-        <div className="text-center">
-          <p className="text-xs text-gray-500 mb-1">Peak Value</p>
-          <p className="text-sm font-semibold text-gray-300">
-            ${(portfolio.totalValue * 1.12).toFixed(2)}
-          </p>
-        </div>
-        <div className="text-center">
-          <p className="text-xs text-gray-500 mb-1">Protection Level</p>
-          <p className="text-sm font-semibold text-green-400">
-            ${(portfolio.totalValue * 0.9).toFixed(2)}
-          </p>
+      {/* Market Risk Section */}
+      <div className="mt-4 pt-3 border-t border-gray-800">
+        <p className="text-xs font-semibold text-gray-400 mb-2">
+          Market Risk
+        </p>
+
+        <div className="space-y-2">
+          {/* Risk Level Indicator */}
+          <div className="flex items-center justify-between p-2 rounded-lg bg-gray-800/40">
+            <div className="flex items-center gap-1.5">
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  marketState.riskLevel === "critical"
+                    ? "bg-red-500 animate-pulse"
+                    : marketState.riskLevel === "high"
+                    ? "bg-orange-500"
+                    : marketState.riskLevel === "moderate"
+                    ? "bg-yellow-500"
+                    : "bg-green-500"
+                }`}
+              />
+              <span className="text-xs text-gray-300">Risk</span>
+            </div>
+            <span
+              className={`text-xs font-bold ${
+                marketState.riskLevel === "critical"
+                  ? "text-red-400"
+                  : marketState.riskLevel === "high"
+                  ? "text-orange-400"
+                  : marketState.riskLevel === "moderate"
+                  ? "text-yellow-400"
+                  : "text-green-400"
+              }`}
+            >
+              {marketState.riskLevel === "critical"
+                ? "Elevated"
+                : marketState.riskLevel === "high"
+                ? "Moderate"
+                : marketState.riskLevel === "moderate"
+                ? "Low"
+                : "Calm"}
+            </span>
+          </div>
+
+          {/* Market Stats Grid */}
+          <div className="grid grid-cols-2 gap-2">
+            <div className="p-2 rounded-lg bg-gray-800/40">
+              <p className="text-[10px] text-gray-500 mb-0.5">SOL Price</p>
+              <p className="text-xs font-semibold text-gray-300">
+                ${(marketState.currentPrice || 210).toFixed(2)}
+              </p>
+            </div>
+            <div className="p-2 rounded-lg bg-gray-800/40">
+              <p className="text-[10px] text-gray-500 mb-0.5">Volatility</p>
+              <p className="text-xs font-semibold text-gray-300">
+                {((marketState.volatility || 0) * 100).toFixed(1)}%
+              </p>
+            </div>
+          </div>
+
+          {/* Protection Floor */}
+          <div className="p-2 rounded-lg bg-green-500/10 border border-green-500/30">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] text-gray-400">Protection Floor</span>
+              <span className="text-xs font-bold text-green-400">
+                ${(portfolio.totalValue * 0.9).toFixed(2)}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

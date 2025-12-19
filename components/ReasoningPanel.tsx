@@ -66,7 +66,7 @@ export default function ReasoningPanel({
     }, 300);
   };
 
-  // Initial boot message - CALM, HUMAN, AND REASSURING  
+  // Initial boot message - CALM, HUMAN, AND REASSURING
   useEffect(() => {
     addMessage("STEADY protection is now active and watching", "success");
 
@@ -87,7 +87,7 @@ export default function ReasoningPanel({
         "info"
       );
     }, 3000);
-    
+
     setTimeout(() => {
       addMessage(
         "Everything looks stable. No action needed at this time.",
@@ -119,7 +119,8 @@ export default function ReasoningPanel({
           },
           Growth: {
             action: "Growth mode is now active",
-            reasoning: "You have more room to grow, but protection is still watching.",
+            reasoning:
+              "You have more room to grow, but protection is still watching.",
             context:
               "STEADY gives you space for upside while still preventing major losses.",
           },
@@ -140,24 +141,18 @@ export default function ReasoningPanel({
   // React to protection trigger - CLEAR HUMAN EXPLANATION
   useEffect(() => {
     if (isProtectionTriggered) {
-      addMessage("⚠️ Protection triggered — your portfolio needs help", "warning");
+      addMessage(
+        "⚠️ Protection triggered — your portfolio needs help",
+        "warning"
+      );
       setTimeout(() => {
-        addMessage(
-          "Your value dropped beyond your comfort zone",
-          "warning"
-        );
+        addMessage("Your value dropped beyond your comfort zone", "warning");
       }, 600);
       setTimeout(() => {
-        addMessage(
-          "STEADY is stepping in to protect you right now",
-          "action"
-        );
+        addMessage("STEADY is stepping in to protect you right now", "action");
       }, 1200);
       setTimeout(() => {
-        addMessage(
-          "Moving assets to safety to prevent more loss",
-          "action"
-        );
+        addMessage("Moving assets to safety to prevent more loss", "action");
       }, 1800);
       setTimeout(() => {
         addMessage(

@@ -42,12 +42,24 @@ export default function ActivationFlow() {
   const { publicKey, connected, connecting, select, wallets } = wallet;
   const { setVisible } = useWalletModal();
 
+  // Handler for opening wallet modal - defined at component level
+  const handleConnect = () => {
+    console.log("[ActivationFlow] Connect button clicked");
+    console.log("[ActivationFlow] Available wallets:", wallets.map(w => w.adapter.name));
+    
+    // Try to select Phantom directly if available
+    const phantom = wallets.find(w => w.adapter.name === "Phantom");
+    if (phantom && phantom.readyState === "Installed") {
+      console.log("[ActivationFlow] Phantom found and installed, selecting...");
+      select(phantom.adapter.name);
+    } else {
+      console.log("[ActivationFlow] Opening wallet modal...");
+      setVisible(true);
+    }
+  };
+
   // Step 1: Wallet Connection
   const renderStep1 = () => {
-    const handleConnect = () => {
-      // Simply open the wallet modal
-      setVisible(true);
-    };
 
     return (
       <div className="max-w-lg mx-auto">
