@@ -132,8 +132,8 @@ export default function PortfolioCard() {
       {/* Header: Total Value */}
       <div className="mb-6">
         <p className="text-sm text-gray-500 mb-1">Total Portfolio Value</p>
-        <div className="flex items-baseline gap-3">
-          <h2 className="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+        <div className="flex items-baseline gap-1 flex-wrap">
+          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             $
             {portfolio.totalValue.toLocaleString("en-US", {
               minimumFractionDigits: 2,
@@ -143,7 +143,7 @@ export default function PortfolioCard() {
 
           {/* Mode Badge */}
           <div
-            className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${currentModeColors.bg} ${currentModeColors.text} border ${currentModeColors.border}`}
+            className={`px-1.5 py-0.5 rounded text-[9px] font-semibold uppercase tracking-tight ${currentModeColors.bg} ${currentModeColors.text} border ${currentModeColors.border}`}
           >
             {portfolio.mode}
           </div>

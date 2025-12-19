@@ -3,12 +3,15 @@
  *
  * Visual risk indicator (Green/Yellow/Red)
  * Gives judges instant "health check" vibe
+ *
+ * UPDATED: Now shows live monitoring indicator with subtle pulse
  */
 
 "use client";
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { isMarketLoopRunning } from "@/lib/marketLoop";
 
 interface Props {
   mode: "Safe" | "Balanced" | "Growth";
@@ -19,6 +22,19 @@ interface Props {
 export default function RiskMeter({ mode, currentValue, peakValue }: Props) {
   const [riskLevel, setRiskLevel] = useState<"low" | "medium" | "high">("low");
   const [drawdown, setDrawdown] = useState(0);
+  const [isMonitoring, setIsMonitoring] = useState(false);
+
+  // Check if market loop is actively monitoring
+  useEffect(() => {
+    const checkMonitoring = () => {
+      setIsMonitoring(isMarketLoopRunning());
+    };
+
+    checkMonitoring();
+    const interval = setInterval(checkMonitoring, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Calculate risk based on drawdown and mode
   useEffect(() => {
@@ -78,7 +94,25 @@ export default function RiskMeter({ mode, currentValue, peakValue }: Props) {
   const config = getRiskConfig();
 
   return (
-    <div className="border border-purple-500/30 rounded-xl p-6 bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-sm">
+    <div className="border border-purple-500/30 rounded-xl p-6 bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-sm relative">
+      {/* Live Monitoring Indicator */}
+      {isMonitoring && (
+        <div className="absolute top-3 right-3">
+          <motion.div
+            className="w-2 h-2 rounded-full bg-green-400"
+            animate={{
+              opacity: [1, 0.4, 1],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        </div>
+      )}
+
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-2">

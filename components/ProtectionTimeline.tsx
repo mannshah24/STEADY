@@ -3,12 +3,17 @@
  *
  * Visual timeline showing protection events
  * Turns logic into a story judges can follow
+ *
+ * UPDATED: Now auto-populates from market loop events and alerts
+ * Timeline tells a story over time
  */
 
 "use client";
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { onMarketEvent, type MarketEvent } from "@/lib/marketLoop";
+import { onNewAlert, type Alert } from "@/lib/alertEngine";
 
 interface TimelineEvent {
   id: number;
@@ -28,50 +33,109 @@ interface Props {
 export default function ProtectionTimeline({ mode, currentValue }: Props) {
   const [events, setEvents] = useState<TimelineEvent[]>([]);
 
-  // Initialize with demo events
+  // Initialize with meaningful startup events
   useEffect(() => {
     const initialEvents: TimelineEvent[] = [
       {
         id: 1,
         type: "peak",
-        title: "Portfolio Peak Recorded",
-        description: `Peak value of $${currentValue.toFixed(2)} established`,
+        title: "STEADY Activated",
+        description: `Protection system initialized. Baseline value established at $${currentValue.toFixed(
+          2
+        )}`,
         timestamp: new Date(Date.now() - 3600000), // 1 hour ago
-        icon: "📈",
+        icon: "✨",
         color: "green",
       },
       {
         id: 2,
-        type: "drop",
-        title: "Market Movement Detected",
-        description: "SOL price declined, monitoring drawdown",
-        timestamp: new Date(Date.now() - 1800000), // 30 min ago
-        icon: "📉",
-        color: "orange",
+        type: "rebalance",
+        title: "Monitoring Began",
+        description:
+          "Continuous market analysis active. Protection armed and ready.",
+        timestamp: new Date(Date.now() - 3000000), // 50 min ago
+        icon: "👁️",
+        color: "blue",
       },
     ];
 
     setEvents(initialEvents);
   }, [currentValue]);
 
-  // Add event when mode changes
+  // Add event when mode changes - TELL THE STORY WITH CONTEXT
   useEffect(() => {
     if (events.length > 0) {
       // Skip initial render
+      const modeDescriptions = {
+        Safe: "Maximum protection active. Portfolio secured with conservative allocation.",
+        Balanced:
+          "Balanced approach engaged. Protection active with room for growth.",
+        Growth:
+          "Growth-focused allocation. Protection ready to respond if needed.",
+      };
+
       const newEvent: TimelineEvent = {
         id: Date.now(),
         type: "rebalance",
-        title: `Strategy Changed to ${mode}`,
-        description: `Portfolio rebalanced to ${mode} mode allocation`,
+        title: `Life Mode Changed: ${mode}`,
+        description: modeDescriptions[mode],
         timestamp: new Date(),
-        icon: mode === "Safe" ? "🛡️" : mode === "Balanced" ? "⚖️" : "🚀",
+        icon: mode === "Safe" ? "🛡️" : mode === "Balanced" ? "⚖️" : "⚡",
         color:
-          mode === "Safe" ? "blue" : mode === "Balanced" ? "purple" : "pink",
+          mode === "Safe" ? "blue" : mode === "Balanced" ? "purple" : "green",
       };
 
       setEvents((prev) => [...prev, newEvent].slice(-6)); // Keep last 6
     }
   }, [mode]);
+
+  // Subscribe to critical alerts and add meaningful events to timeline
+  useEffect(() => {
+    const unsubscribe = onNewAlert((alert: Alert) => {
+      // Only add critical and action alerts to timeline
+      if (alert.type === "critical" || alert.type === "action") {
+        // Enhanced descriptions for better storytelling
+        const enhancedDescription =
+          alert.type === "action"
+            ? `${alert.message} Protection systems engaged. Loss prevented.`
+            : `${alert.message} Monitoring closely. Protection armed.`;
+
+        const newEvent: TimelineEvent = {
+          id: Date.now(),
+          type: alert.type === "action" ? "protection" : "drop",
+          title:
+            alert.type === "action"
+              ? "Protection Response Executed"
+              : "Risk Condition Detected",
+          description: enhancedDescription,
+          timestamp: new Date(alert.timestamp),
+          icon: alert.type === "action" ? "⚡" : "⚠️",
+          color: alert.type === "action" ? "green" : "orange",
+        };
+
+        setEvents((prev) => [...prev, newEvent].slice(-6));
+
+        // Add recovery confirmation 2 seconds after protection activation
+        if (alert.type === "action") {
+          setTimeout(() => {
+            const recoveryEvent: TimelineEvent = {
+              id: Date.now() + 1,
+              type: "recovery",
+              title: "Recovery Protocol Active",
+              description:
+                "Portfolio stabilized. Monitoring for safe return to growth allocation.",
+              timestamp: new Date(),
+              icon: "💚",
+              color: "green",
+            };
+            setEvents((prev) => [...prev, recoveryEvent].slice(-6));
+          }, 2000);
+        }
+      }
+    });
+
+    return unsubscribe;
+  }, []);
 
   const getColorClasses = (color: string) => {
     const colors = {

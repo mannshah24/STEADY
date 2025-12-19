@@ -15,9 +15,9 @@ import "@solana/wallet-adapter-react-ui/styles.css";
 import WalletProvider from "@/components/WalletProvider";
 
 export const metadata: Metadata = {
-  title: "STEADY | Solana Autopilot Investing",
+  title: "STEADY | Life-Aware Crypto Protection",
   description:
-    "Non-custodial crypto investing with downside protection on Solana",
+    "STEADY protects crypto holders when life gets in the way — when you're asleep, busy, emotional, or offline. Non-custodial protection on Solana.",
 };
 
 export default function RootLayout({

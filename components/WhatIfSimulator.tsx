@@ -207,7 +207,7 @@ export default function WhatIfSimulator({
             </div>
           )}
 
-          {/* Protection Status */}
+          {/* Protection Response - CLEAR MESSAGING */}
           <div
             className={`p-4 rounded-lg border ${
               simulation.protectionTriggered
@@ -215,29 +215,62 @@ export default function WhatIfSimulator({
                 : "bg-green-500/10 border-green-500/30"
             }`}
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 mb-3">
               <span className="text-3xl">
                 {simulation.protectionTriggered ? "🛡️" : "✅"}
               </span>
-              <div>
+              <div className="flex-1">
                 <p
-                  className={`font-bold ${
+                  className={`font-bold text-lg ${
                     simulation.protectionTriggered
                       ? "text-red-400"
                       : "text-green-400"
                   }`}
                 >
                   {simulation.protectionTriggered
-                    ? "⚠️ Downside Protection TRIGGERED"
-                    : "✓ Portfolio Safe"}
+                    ? "Protection Would Activate"
+                    : "Portfolio Remains Safe"}
                 </p>
                 <p className="text-sm text-gray-400 mt-1">
                   {simulation.protectionTriggered
-                    ? "Automatic rebalance to Safe Mode would execute"
-                    : "No protection needed - drawdown below 10% threshold"}
+                    ? `Drawdown crossed ${simulation.drawdown.toFixed(
+                        1
+                      )}% threshold`
+                    : `Drawdown at ${simulation.drawdown.toFixed(
+                        1
+                      )}% — below protection threshold`}
                 </p>
               </div>
             </div>
+
+            {/* HUMAN-FOCUSED EXPLANATION */}
+            {simulation.protectionTriggered && (
+              <div className="mt-3 pt-3 border-t border-red-500/30">
+                <p className="text-sm text-white font-semibold mb-2">
+                  What STEADY Would Do:
+                </p>
+                <ul className="text-sm text-gray-400 space-y-1.5">
+                  <li className="flex items-start gap-2">
+                    <span className="text-red-400">1.</span>
+                    <span>Detect risk threshold crossed</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-red-400">2.</span>
+                    <span>Rebalance to safer allocation automatically</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-red-400">3.</span>
+                    <span>Prevent further loss</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-400">✓</span>
+                    <span className="text-green-400 font-semibold">
+                      Loss prevented. Protection active. You're safe.
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            )}
           </div>
 
           {/* Reset Button */}

@@ -1,9 +1,11 @@
 /**
  * app/page.tsx
  *
- * STEADY - Main landing page
- * Designed to impress hackathon judges visually and conceptually
- * Features scroll-based gradient transitions and smooth animations
+ * STEADY - Risk Management Platform
+ *
+ * Dashboard Gating Logic:
+ * - If not activated → show ActivationFlow
+ * - If activated → show full dashboard with protection modules
  */
 
 "use client";
@@ -21,11 +23,66 @@ import ReasoningPanel from "@/components/ReasoningPanel";
 import ProtectionTimeline from "@/components/ProtectionTimeline";
 import RiskMeter from "@/components/RiskMeter";
 import PanicButton from "@/components/PanicButton";
+import ActivationFlow from "@/components/ActivationFlow";
+import PlatformModules from "@/components/PlatformModules";
+import SteadyStatus from "@/components/SteadyStatus";
+import AlertsPanel from "@/components/AlertsPanel";
+import LifeModeSelector from "@/components/LifeModeSelector";
+import TransparencyPanel from "@/components/TransparencyPanel";
+import ProductClarityPanel from "@/components/ProductClarityPanel";
 import { fetchPortfolio, toAnchorWallet } from "@/lib/anchor";
 import { getBalance } from "@/lib/solana";
 import { getSolUsdPrice } from "@/lib/pyth";
+import { isSteadyActive } from "@/lib/steadyState";
+import {
+  startMarketLoop,
+  stopMarketLoop,
+  onMarketEvent,
+} from "@/lib/marketLoop";
+import { addAlert } from "@/lib/alertEngine";
 
 export default function Home() {
+  const [isActivated, setIsActivated] = useState(false);
+
+  // Check activation status on mount
+  useEffect(() => {
+    const activated = isSteadyActive();
+    console.log("Checking activation status:", activated);
+    setIsActivated(activated);
+
+    // Listen for storage changes (when reset button is clicked in another component)
+    const handleStorageChange = () => {
+      const newStatus = isSteadyActive();
+      console.log("Activation status changed:", newStatus);
+      setIsActivated(newStatus);
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    // Also listen for custom event from reset button
+    const handleReset = () => {
+      console.log("Reset event received");
+      setIsActivated(false);
+    };
+
+    window.addEventListener("steady-reset", handleReset);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("steady-reset", handleReset);
+    };
+  }, []);
+
+  // If not activated, show activation flow (Stripe-style onboarding)
+  if (!isActivated) {
+    return <ActivationFlow />;
+  }
+
+  // If activated, show full dashboard
+  return <ActivatedDashboard />;
+}
+
+function ActivatedDashboard() {
   const wallet = useWallet();
   const { connected, publicKey } = wallet;
 
@@ -35,6 +92,25 @@ export default function Home() {
   const [currentValue, setCurrentValue] = useState(0);
   const [peakValue, setPeakValue] = useState(0);
   const [allocation, setAllocation] = useState({ sol: 20, usdc: 80 });
+
+  // Start market monitoring loop when activated
+  useEffect(() => {
+    if (isSteadyActive()) {
+      console.log("[Dashboard] Starting market loop...");
+      startMarketLoop();
+
+      // Subscribe to market events and convert to alerts
+      const unsubscribe = onMarketEvent((event) => {
+        addAlert(event.type, event.message, event.data);
+      });
+
+      return () => {
+        console.log("[Dashboard] Stopping market loop...");
+        stopMarketLoop();
+        unsubscribe();
+      };
+    }
+  }, []);
 
   // Track portfolio state for all components
   useEffect(() => {
@@ -102,17 +178,19 @@ export default function Home() {
             </h1>
           </div>
 
-          {/* Tagline */}
+          {/* Tagline - CLEAR VALUE PROMISE */}
           <p className="text-2xl md:text-3xl text-gray-300 mb-6 max-w-3xl mx-auto leading-relaxed">
-            Solana-native autopilot investing with{" "}
             <span className="text-cyan-400 font-bold">
-              automatic downside protection
+              STEADY protects crypto holders when life gets in the way
             </span>
           </p>
 
-          <p className="text-lg text-gray-400 mb-12 max-w-2xl mx-auto">
-            Your portfolio automatically switches to Safe mode when it drops 10%
-            from its peak. No manual intervention required.
+          <p className="text-xl text-gray-400 mb-4 max-w-2xl mx-auto font-medium">
+            When you're asleep, busy, emotional, or offline.
+          </p>
+
+          <p className="text-base text-gray-500 mb-12 max-w-2xl mx-auto">
+            Non-custodial protection that watches 24/7 so you don't have to.
           </p>
 
           {/* Key Stats */}
@@ -138,45 +216,43 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Feature Cards */}
+        {/* Feature Cards - HUMAN-FOCUSED LANGUAGE */}
         <section id="features" className="container mx-auto px-4 mb-32">
           <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {/* Feature 1 */}
             <div className="group relative p-8 rounded-2xl border border-cyan-500/30 bg-gray-900/50 backdrop-blur-sm hover:border-cyan-500/60 transition-all hover:shadow-[0_0_40px_rgba(6,182,212,0.2)] hover:scale-105 duration-300">
-              <div className="text-5xl mb-4">🛡️</div>
+              <div className="text-5xl mb-4">🌙</div>
               <h3 className="text-2xl font-bold mb-3 text-cyan-400">
-                Downside Protection
+                Life-Aware Protection
               </h3>
               <p className="text-gray-400 leading-relaxed">
-                Automatic 10% drawdown protection. When your portfolio drops
-                from its peak, the system immediately switches to Safe mode to
-                preserve capital.
+                Sleep Mode, Focus Mode, Growth Mode. Protection adapts to what's
+                happening in your life — not just what's happening in markets.
               </p>
             </div>
 
             {/* Feature 2 */}
             <div className="group relative p-8 rounded-2xl border border-purple-500/30 bg-gray-900/50 backdrop-blur-sm hover:border-purple-500/60 transition-all hover:shadow-[0_0_40px_rgba(168,85,247,0.2)] hover:scale-105 duration-300">
-              <div className="text-5xl mb-4">⚡</div>
+              <div className="text-5xl mb-4">💡</div>
               <h3 className="text-2xl font-bold mb-3 text-purple-400">
-                Smart Rebalancing
+                Always Explains
               </h3>
               <p className="text-gray-400 leading-relaxed">
-                Choose between Safe, Balanced, or Growth modes. Each strategy
-                automatically manages your allocation for optimal risk-adjusted
-                returns.
+                No silent moves. Every decision is explained in plain language.
+                You always know what STEADY is thinking and why it acts.
               </p>
             </div>
 
             {/* Feature 3 */}
             <div className="group relative p-8 rounded-2xl border border-pink-500/30 bg-gray-900/50 backdrop-blur-sm hover:border-pink-500/60 transition-all hover:shadow-[0_0_40px_rgba(236,72,153,0.2)] hover:scale-105 duration-300">
-              <div className="text-5xl mb-4">🔐</div>
+              <div className="text-5xl mb-4">🔒</div>
               <h3 className="text-2xl font-bold mb-3 text-pink-400">
-                Non-Custodial
+                100% Non-Custodial
               </h3>
               <p className="text-gray-400 leading-relaxed">
-                You maintain complete control. Your funds stay in your wallet.
-                All operations are executed by Solana smart contracts - no
-                intermediaries.
+                Your crypto never leaves your wallet. We have zero ability to
+                access your funds. Mathematically impossible. Cryptographically
+                provable.
               </p>
             </div>
           </div>
@@ -207,6 +283,37 @@ export default function Home() {
               Intelligent, real-time monitoring with AI-powered insights
             </p>
           </motion.div>
+
+          {/* Top Banner - EMOTIONAL LIFE PROTECTION MESSAGE */}
+          <div className="max-w-7xl mx-auto mb-8">
+            <div className="rounded-xl border-2 border-cyan-500/50 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 backdrop-blur-sm p-8 text-center shadow-xl shadow-cyan-500/20">
+              <p className="text-2xl md:text-3xl font-bold text-white mb-3">
+                Protection that understands human life
+              </p>
+              <p className="text-lg text-gray-300 mb-2">
+                STEADY protects you when you're asleep, busy, emotional, or
+                offline
+              </p>
+              <p className="text-sm text-cyan-400">
+                Because crypto never sleeps — but you should be able to
+              </p>
+            </div>
+          </div>
+
+          {/* Life Mode Selector - THE ICONIC FEATURE */}
+          <div className="max-w-7xl mx-auto mb-12">
+            <LifeModeSelector />
+          </div>
+
+          {/* Live Monitoring Status */}
+          <div className="max-w-7xl mx-auto mb-8">
+            <SteadyStatus />
+          </div>
+
+          {/* Activity Log */}
+          <div className="max-w-7xl mx-auto mb-8">
+            <AlertsPanel />
+          </div>
 
           {/* Dashboard Grid */}
           <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
@@ -307,7 +414,7 @@ export default function Home() {
         >
           <div className="max-w-4xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-              How It Works
+              Platform Architecture
             </h2>
 
             <div className="space-y-8">
@@ -368,11 +475,12 @@ export default function Home() {
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-pink-400 mb-2">
-                    Autopilot Engaged
+                    Protection Engine Active
                   </h3>
                   <p className="text-gray-400 leading-relaxed">
-                    STEADY monitors your portfolio 24/7. If it drops 10% from
-                    peak, protection automatically activates.
+                    Platform monitors your portfolio continuously. When drawdown
+                    exceeds 10% from peak, downside protection automatically
+                    activates.
                   </p>
                 </div>
               </motion.div>
@@ -380,22 +488,34 @@ export default function Home() {
           </div>
         </motion.section>
 
-        {/* Non-Custodial Message */}
-        <section className="container mx-auto px-4 mb-20">
-          <div className="max-w-4xl mx-auto p-12 rounded-2xl border-2 border-green-500/30 bg-gradient-to-br from-green-500/5 to-emerald-500/5 backdrop-blur-sm text-center">
-            <div className="text-6xl mb-6">🔐</div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-green-400">
-              100% Non-Custodial
-            </h2>
-            <p className="text-xl text-gray-300 leading-relaxed max-w-2xl mx-auto">
-              Your funds{" "}
-              <span className="text-green-400 font-bold">
-                never leave your wallet
-              </span>
-              . All operations are executed by Solana smart contracts. You
-              maintain complete control at all times.
-            </p>
+        {/* Product Clarity Panel - CRITICAL FOR TRUST */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          id="protection"
+          className="container mx-auto px-4 mb-32"
+        >
+          <div className="max-w-6xl mx-auto">
+            <ProductClarityPanel />
           </div>
+        </motion.section>
+
+        {/* Transparency Panel - BUILD TRUST */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="container mx-auto px-4 mb-32"
+        >
+          <div className="max-w-4xl mx-auto">
+            <TransparencyPanel />
+          </div>
+        </motion.section>
+
+        {/* Platform Modules */}
+        <section className="container mx-auto px-4 mb-32">
+          <PlatformModules />
         </section>
       </main>
 
@@ -406,12 +526,16 @@ export default function Home() {
             <p className="text-2xl font-bold text-transparent bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text">
               STEADY
             </p>
-            <p className="text-gray-400">
-              Built on Solana Devnet | Hackathon MVP
+            <p className="text-gray-400 text-lg">
+              Life-Aware Crypto Protection
             </p>
-            <p className="text-sm text-gray-500 max-w-2xl mx-auto leading-relaxed">
-              This is a demonstration project. Use at your own risk. Not
-              financial advice. Always do your own research before investing.
+            <p className="text-sm text-gray-400 max-w-2xl mx-auto">
+              Non-custodial • Transparent • Built on Solana
+            </p>
+            <p className="text-xs text-gray-600 max-w-2xl mx-auto leading-relaxed mt-4">
+              Not financial advice. Cryptocurrency investing carries risk.
+              STEADY is a protection tool, not a profit guarantee. Always invest
+              responsibly.
             </p>
           </div>
         </div>

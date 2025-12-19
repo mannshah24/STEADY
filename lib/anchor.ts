@@ -91,26 +91,14 @@ export async function initializePortfolio(wallet: AnchorWallet): Promise<string>
     data: INSTRUCTION_DISCRIMINATORS.initializePortfolio,
   });
 
-  // Build and send transaction with fresh blockhash
+  // Build and send transaction
   const transaction = new Transaction().add(instruction);
   transaction.feePayer = wallet.publicKey;
-  
-  // Get fresh blockhash with finalized commitment for reliability
-  const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('finalized');
-  transaction.recentBlockhash = blockhash;
+  transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
 
   const signed = await wallet.signTransaction(transaction);
-  const signature = await connection.sendRawTransaction(signed.serialize(), {
-    skipPreflight: false,
-    preflightCommitment: 'finalized',
-  });
-  
-  // Wait for confirmation with timeout
-  await connection.confirmTransaction({
-    signature,
-    blockhash,
-    lastValidBlockHeight,
-  }, 'confirmed');
+  const signature = await connection.sendRawTransaction(signed.serialize());
+  await connection.confirmTransaction(signature, "confirmed");
 
   return signature;
 }
@@ -148,23 +136,11 @@ export async function updateMode(
 
   const transaction = new Transaction().add(instruction);
   transaction.feePayer = wallet.publicKey;
-  
-  // Get fresh blockhash with finalized commitment
-  const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('finalized');
-  transaction.recentBlockhash = blockhash;
+  transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
 
   const signed = await wallet.signTransaction(transaction);
-  const signature = await connection.sendRawTransaction(signed.serialize(), {
-    skipPreflight: false,
-    preflightCommitment: 'finalized',
-  });
-  
-  // Wait for confirmation with timeout
-  await connection.confirmTransaction({
-    signature,
-    blockhash,
-    lastValidBlockHeight,
-  }, 'confirmed');
+  const signature = await connection.sendRawTransaction(signed.serialize());
+  await connection.confirmTransaction(signature, "confirmed");
 
   return signature;
 }
@@ -202,23 +178,11 @@ export async function checkAndProtectDownside(
 
   const transaction = new Transaction().add(instruction);
   transaction.feePayer = wallet.publicKey;
-  
-  // Get fresh blockhash with finalized commitment
-  const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('finalized');
-  transaction.recentBlockhash = blockhash;
+  transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
 
   const signed = await wallet.signTransaction(transaction);
-  const signature = await connection.sendRawTransaction(signed.serialize(), {
-    skipPreflight: false,
-    preflightCommitment: 'finalized',
-  });
-  
-  // Wait for confirmation with timeout
-  await connection.confirmTransaction({
-    signature,
-    blockhash,
-    lastValidBlockHeight,
-  }, 'confirmed');
+  const signature = await connection.sendRawTransaction(signed.serialize());
+  await connection.confirmTransaction(signature, "confirmed");
 
   return signature;
 }

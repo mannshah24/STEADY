@@ -4,12 +4,16 @@
  * Terminal-style AI reasoning display
  * Shows "intelligent" system messages with typing animation
  * Creates the feeling of an autopilot monitoring the portfolio
+ *
+ * UPDATED: Now receives live messages from market monitoring loop
+ * This is the "thinking voice" of STEADY
  */
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { onMarketEvent, type MarketEvent } from "@/lib/marketLoop";
 
 interface Message {
   id: number;
@@ -31,7 +35,7 @@ export default function ReasoningPanel({
 }: Props) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
-  const [messageIdCounter, setMessageIdCounter] = useState(0);
+  const messageIdRef = useRef(0);
 
   // Generate timestamp
   const getTimestamp = () => {
@@ -49,9 +53,9 @@ export default function ReasoningPanel({
     setIsTyping(true);
 
     setTimeout(() => {
-      setMessageIdCounter((prev) => prev + 1);
+      messageIdRef.current += 1;
       const newMessage: Message = {
-        id: Date.now() + messageIdCounter,
+        id: messageIdRef.current,
         text,
         type,
         timestamp: getTimestamp(),
@@ -62,71 +66,118 @@ export default function ReasoningPanel({
     }, 300);
   };
 
-  // Initial boot message
+  // Initial boot message - CALM AND REASSURING
   useEffect(() => {
-    addMessage("STEADY Autopilot System v1.0 initialized", "success");
+    addMessage("STEADY Protection System initialized", "success");
 
     setTimeout(() => {
-      addMessage("Connecting to Solana Devnet...", "info");
+      addMessage("Connecting to Solana network...", "info");
     }, 1000);
 
     setTimeout(() => {
-      addMessage("Portfolio monitoring active", "success");
+      addMessage(
+        "Connection established. Beginning continuous monitoring.",
+        "success"
+      );
     }, 2000);
+
+    setTimeout(() => {
+      addMessage(
+        "Market data stream active. Real-time analysis in progress.",
+        "info"
+      );
+    }, 3000);
   }, []);
 
-  // React to mode changes
+  // React to mode changes - ALWAYS EXPLAIN WHY AND WHAT
   useEffect(() => {
     if (messages.length > 0) {
       // Skip initial render
       setTimeout(() => {
+        // Mode-specific explanations that are CALM and HUMAN-FOCUSED
         const modeMessages = {
-          Safe: "Conservative strategy activated - Capital preservation priority",
-          Balanced: "Balanced strategy activated - Moderate risk/reward ratio",
-          Growth:
-            "Aggressive growth strategy activated - Maximum upside potential",
+          Safe: {
+            action: "Protection mode activated",
+            reasoning:
+              "Conservative allocation prioritizes capital preservation over growth.",
+            context:
+              "Lower risk exposure. Suitable for volatile conditions or peace of mind.",
+          },
+          Balanced: {
+            action: "Balanced mode activated",
+            reasoning:
+              "Moderate allocation balances growth potential with downside protection.",
+            context:
+              "Standard protection threshold at 10% drawdown. Reasonable for normal conditions.",
+          },
+          Growth: {
+            action: "Growth mode activated",
+            reasoning: "Growth-oriented allocation maximizes upside potential.",
+            context:
+              "Protection still active but allows more room for volatility. For confident periods.",
+          },
         };
 
-        addMessage(`Mode change detected: ${mode}`, "action");
+        const msg = modeMessages[mode];
+        addMessage(`Mode change: ${msg.action}`, "action");
         setTimeout(() => {
-          addMessage(modeMessages[mode], "info");
-        }, 500);
+          addMessage(`WHY: ${msg.reasoning}`, "info");
+        }, 600);
+        setTimeout(() => {
+          addMessage(`CONTEXT: ${msg.context}`, "info");
+        }, 1200);
       }, 300);
     }
   }, [mode]);
 
-  // React to protection trigger
+  // React to protection trigger - CLEAR EXPLANATION OF WHAT HAPPENED AND WHY
   useEffect(() => {
     if (isProtectionTriggered) {
-      addMessage("⚠️ ALERT: Drawdown threshold reached", "warning");
+      addMessage("⚠️ ALERT: Protection threshold crossed", "warning");
       setTimeout(() => {
-        addMessage("Executing downside protection protocol...", "action");
-      }, 800);
+        addMessage(
+          "OBSERVED: Portfolio value dropped beyond safe limit",
+          "warning"
+        );
+      }, 600);
       setTimeout(() => {
-        addMessage("Portfolio rebalanced to Safe Mode", "success");
-      }, 1600);
+        addMessage(
+          "DECISION: Activating downside protection protocol",
+          "action"
+        );
+      }, 1200);
+      setTimeout(() => {
+        addMessage(
+          "ACTION: Rebalancing to safer allocation to prevent further loss",
+          "action"
+        );
+      }, 1800);
+      setTimeout(() => {
+        addMessage(
+          "RESULT: Loss prevented. Protection active. You're safe.",
+          "success"
+        );
+      }, 2400);
     }
   }, [isProtectionTriggered]);
 
-  // Periodic monitoring messages
+  // Subscribe to live market events from the monitoring loop
   useEffect(() => {
-    const interval = setInterval(() => {
-      const monitoringMessages = [
-        "Scanning market volatility...",
-        "Calculating drawdown metrics...",
-        "Monitoring portfolio health...",
-        "Checking risk parameters...",
-        "Analyzing asset allocation...",
-      ];
+    const unsubscribe = onMarketEvent((event: MarketEvent) => {
+      // Convert market event to reasoning message
+      const messageType: Message["type"] =
+        event.type === "critical"
+          ? "warning"
+          : event.type === "action"
+          ? "action"
+          : event.type === "warning"
+          ? "warning"
+          : "info";
 
-      const randomMessage =
-        monitoringMessages[
-          Math.floor(Math.random() * monitoringMessages.length)
-        ];
-      addMessage(randomMessage, "info");
-    }, 15000); // Every 15 seconds
+      addMessage(event.message, messageType);
+    });
 
-    return () => clearInterval(interval);
+    return unsubscribe;
   }, []);
 
   const getMessageColor = (type: Message["type"]) => {

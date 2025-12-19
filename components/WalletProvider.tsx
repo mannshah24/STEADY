@@ -30,13 +30,10 @@ export default function WalletProvider({
     <ConnectionProvider endpoint={DEVNET_ENDPOINT}>
       <SolanaWalletProvider
         wallets={wallets}
-        autoConnect
+        autoConnect={true}
         onError={(error) => {
-          // Suppress MetaMask detection errors
-          if (error.message?.includes("MetaMask")) {
-            return;
-          }
-          console.error("Wallet error:", error);
+          // Log errors but don't show annoying popups
+          console.log("[Wallet]", error.name, error.message);
         }}
       >
         <WalletModalProvider>{children}</WalletModalProvider>

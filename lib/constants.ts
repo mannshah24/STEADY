@@ -19,9 +19,9 @@ import { PublicKey } from "@solana/web3.js";
 export const SOLANA_NETWORK = "devnet";
 export const SOLANA_RPC_ENDPOINT = "https://api.devnet.solana.com";
 
-// TODO: Replace with actual deployed program ID after `anchor deploy`
+// STEADY Program ID (deployed on devnet)
 export const STEADY_PROGRAM_ID = new PublicKey(
-  "11111111111111111111111111111111" // Placeholder
+  "BfP88RADU3yTpcqZzwfA3NFHGGtAC55ec19Ei4QabUbG"
 );
 
 // ============================================================================
