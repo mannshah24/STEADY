@@ -178,19 +178,19 @@ function ActivatedDashboard() {
             </h1>
           </div>
 
-          {/* Tagline - CLEAR VALUE PROMISE */}
+          {/* Tagline - EMOTIONAL VALUE PROMISE */}
           <p className="text-2xl md:text-3xl text-gray-300 mb-6 max-w-3xl mx-auto leading-relaxed">
             <span className="text-cyan-400 font-bold">
-              STEADY protects crypto holders when life gets in the way
+              Protection that understands you have a life
             </span>
           </p>
 
           <p className="text-xl text-gray-400 mb-4 max-w-2xl mx-auto font-medium">
-            When you're asleep, busy, emotional, or offline.
+            When you're asleep, busy, stressed, or just living your life.
           </p>
 
           <p className="text-base text-gray-500 mb-12 max-w-2xl mx-auto">
-            Non-custodial protection that watches 24/7 so you don't have to.
+            STEADY watches the markets so you don't have to. Non-custodial. Always transparent.
           </p>
 
           {/* Key Stats */}
@@ -223,11 +223,10 @@ function ActivatedDashboard() {
             <div className="group relative p-8 rounded-2xl border border-cyan-500/30 bg-gray-900/50 backdrop-blur-sm hover:border-cyan-500/60 transition-all hover:shadow-[0_0_40px_rgba(6,182,212,0.2)] hover:scale-105 duration-300">
               <div className="text-5xl mb-4">🌙</div>
               <h3 className="text-2xl font-bold mb-3 text-cyan-400">
-                Life-Aware Protection
+                Protection That Gets It
               </h3>
               <p className="text-gray-400 leading-relaxed">
-                Sleep Mode, Focus Mode, Growth Mode. Protection adapts to what's
-                happening in your life — not just what's happening in markets.
+                Sleep Mode when you rest. Focus Mode when you're busy. Growth Mode when you're confident. Panic Mode for emergencies. Protection that understands you're human.
               </p>
             </div>
 
@@ -235,11 +234,10 @@ function ActivatedDashboard() {
             <div className="group relative p-8 rounded-2xl border border-purple-500/30 bg-gray-900/50 backdrop-blur-sm hover:border-purple-500/60 transition-all hover:shadow-[0_0_40px_rgba(168,85,247,0.2)] hover:scale-105 duration-300">
               <div className="text-5xl mb-4">💡</div>
               <h3 className="text-2xl font-bold mb-3 text-purple-400">
-                Always Explains
+                No Black Boxes
               </h3>
               <p className="text-gray-400 leading-relaxed">
-                No silent moves. Every decision is explained in plain language.
-                You always know what STEADY is thinking and why it acts.
+                STEADY explains every decision in human language. No silent moves. No surprises. You always know what's happening and why.
               </p>
             </div>
 
@@ -247,12 +245,10 @@ function ActivatedDashboard() {
             <div className="group relative p-8 rounded-2xl border border-pink-500/30 bg-gray-900/50 backdrop-blur-sm hover:border-pink-500/60 transition-all hover:shadow-[0_0_40px_rgba(236,72,153,0.2)] hover:scale-105 duration-300">
               <div className="text-5xl mb-4">🔒</div>
               <h3 className="text-2xl font-bold mb-3 text-pink-400">
-                100% Non-Custodial
+                Your Keys, Always
               </h3>
               <p className="text-gray-400 leading-relaxed">
-                Your crypto never leaves your wallet. We have zero ability to
-                access your funds. Mathematically impossible. Cryptographically
-                provable.
+                Your crypto never leaves your wallet. STEADY can't access, withdraw, or touch your funds. Ever. It's mathematically impossible.
               </p>
             </div>
           </div>
@@ -277,41 +273,25 @@ function ActivatedDashboard() {
             className="text-center mb-12"
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-              Your Portfolio Dashboard
+              Your Protection Dashboard
             </h2>
             <p className="text-gray-400 text-lg">
-              Intelligent, real-time monitoring with AI-powered insights
+              Real-time monitoring and clear explanations, always
             </p>
           </motion.div>
 
-          {/* Top Banner - EMOTIONAL LIFE PROTECTION MESSAGE */}
+          {/* Life Mode Selector - THE ICONIC FEATURE - MOST PROMINENT */}
           <div className="max-w-7xl mx-auto mb-8">
-            <div className="rounded-xl border-2 border-cyan-500/50 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 backdrop-blur-sm p-8 text-center shadow-xl shadow-cyan-500/20">
-              <p className="text-2xl md:text-3xl font-bold text-white mb-3">
-                Protection that understands human life
-              </p>
-              <p className="text-lg text-gray-300 mb-2">
-                STEADY protects you when you're asleep, busy, emotional, or
-                offline
-              </p>
-              <p className="text-sm text-cyan-400">
-                Because crypto never sleeps — but you should be able to
-              </p>
-            </div>
-          </div>
-
-          {/* Life Mode Selector - THE ICONIC FEATURE */}
-          <div className="max-w-7xl mx-auto mb-12">
             <LifeModeSelector />
           </div>
 
-          {/* Live Monitoring Status */}
+          {/* Live Monitoring Status - HEARTBEAT - SHOWS STEADY IS ALIVE */}
           <div className="max-w-7xl mx-auto mb-8">
             <SteadyStatus />
           </div>
 
-          {/* Activity Log */}
-          <div className="max-w-7xl mx-auto mb-8">
+          {/* Activity Log - WHAT STEADY IS THINKING */}
+          <div className="max-w-7xl mx-auto mb-12">
             <AlertsPanel />
           </div>
 
@@ -378,10 +358,10 @@ function ActivatedDashboard() {
         >
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Choose Your Investment Mode
+              Set Your Risk Comfort Zone
             </h2>
             <p className="text-gray-400 text-lg">
-              All modes include automatic downside protection
+              All modes protect you from major losses. Choose what feels right.
             </p>
           </div>
           <ModeSelector />
@@ -396,10 +376,10 @@ function ActivatedDashboard() {
         >
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent">
-              See Protection in Action
+              How Protection Works
             </h2>
             <p className="text-gray-400 text-lg">
-              Watch how STEADY automatically protects your capital
+              See exactly how STEADY protects you when losses start
             </p>
           </div>
           <RebalanceAnimation />
@@ -414,7 +394,7 @@ function ActivatedDashboard() {
         >
           <div className="max-w-4xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-              Platform Architecture
+              Getting Started Is Simple
             </h2>
 
             <div className="space-y-8">
@@ -431,11 +411,10 @@ function ActivatedDashboard() {
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-cyan-400 mb-2">
-                    Connect Wallet
+                    Connect Your Wallet
                   </h3>
                   <p className="text-gray-400 leading-relaxed">
-                    Connect your Phantom wallet. No signup, no KYC, no email
-                    required.
+                    Just connect with Phantom. No signup. No email. No personal info needed.
                   </p>
                 </div>
               </motion.div>
@@ -453,11 +432,10 @@ function ActivatedDashboard() {
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-purple-400 mb-2">
-                    Choose Strategy
+                    Set Your Life Mode
                   </h3>
                   <p className="text-gray-400 leading-relaxed">
-                    Select Safe, Balanced, or Growth mode based on your risk
-                    tolerance.
+                    Tell STEADY what's happening in your life. Sleeping? Busy? Confident? Choose the mode that fits.
                   </p>
                 </div>
               </motion.div>
@@ -475,12 +453,10 @@ function ActivatedDashboard() {
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-pink-400 mb-2">
-                    Protection Engine Active
+                    STEADY Starts Watching
                   </h3>
                   <p className="text-gray-400 leading-relaxed">
-                    Platform monitors your portfolio continuously. When drawdown
-                    exceeds 10% from peak, downside protection automatically
-                    activates.
+                    That's it. STEADY monitors 24/7. If you start losing more than you're comfortable with, protection kicks in automatically. You're covered.
                   </p>
                 </div>
               </motion.div>
@@ -533,9 +509,7 @@ function ActivatedDashboard() {
               Non-custodial • Transparent • Built on Solana
             </p>
             <p className="text-xs text-gray-600 max-w-2xl mx-auto leading-relaxed mt-4">
-              Not financial advice. Cryptocurrency investing carries risk.
-              STEADY is a protection tool, not a profit guarantee. Always invest
-              responsibly.
+              STEADY is a protection tool, not financial advice. Crypto is risky. STEADY reduces downside — it doesn't promise profits. Always invest what you can afford to lose.
             </p>
           </div>
         </div>

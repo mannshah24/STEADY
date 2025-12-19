@@ -66,27 +66,34 @@ export default function ReasoningPanel({
     }, 300);
   };
 
-  // Initial boot message - CALM AND REASSURING
+  // Initial boot message - CALM, HUMAN, AND REASSURING  
   useEffect(() => {
-    addMessage("STEADY Protection System initialized", "success");
+    addMessage("STEADY protection is now active and watching", "success");
 
     setTimeout(() => {
-      addMessage("Connecting to Solana network...", "info");
+      addMessage("Connecting to market data...", "info");
     }, 1000);
 
     setTimeout(() => {
       addMessage(
-        "Connection established. Beginning continuous monitoring.",
+        "Market connection established. Monitoring begins now.",
         "success"
       );
     }, 2000);
 
     setTimeout(() => {
       addMessage(
-        "Market data stream active. Real-time analysis in progress.",
+        "Evaluating current risk conditions. You can rest easy.",
         "info"
       );
     }, 3000);
+    
+    setTimeout(() => {
+      addMessage(
+        "Everything looks stable. No action needed at this time.",
+        "info"
+      );
+    }, 4500);
   }, []);
 
   // React to mode changes - ALWAYS EXPLAIN WHY AND WHAT
@@ -97,24 +104,24 @@ export default function ReasoningPanel({
         // Mode-specific explanations that are CALM and HUMAN-FOCUSED
         const modeMessages = {
           Safe: {
-            action: "Protection mode activated",
+            action: "Safety-first mode is now active",
             reasoning:
-              "Conservative allocation prioritizes capital preservation over growth.",
+              "Your protection is set to maximum. Peace of mind is the priority.",
             context:
-              "Lower risk exposure. Suitable for volatile conditions or peace of mind.",
+              "STEADY will act sooner to protect you from downside. You're safe.",
           },
           Balanced: {
-            action: "Balanced mode activated",
+            action: "Balanced mode is now active",
             reasoning:
-              "Moderate allocation balances growth potential with downside protection.",
+              "You get growth potential with strong downside protection.",
             context:
-              "Standard protection threshold at 10% drawdown. Reasonable for normal conditions.",
+              "STEADY watches for 10% losses before acting. Good for most situations.",
           },
           Growth: {
-            action: "Growth mode activated",
-            reasoning: "Growth-oriented allocation maximizes upside potential.",
+            action: "Growth mode is now active",
+            reasoning: "You have more room to grow, but protection is still watching.",
             context:
-              "Protection still active but allows more room for volatility. For confident periods.",
+              "STEADY gives you space for upside while still preventing major losses.",
           },
         };
 
@@ -130,31 +137,31 @@ export default function ReasoningPanel({
     }
   }, [mode]);
 
-  // React to protection trigger - CLEAR EXPLANATION OF WHAT HAPPENED AND WHY
+  // React to protection trigger - CLEAR HUMAN EXPLANATION
   useEffect(() => {
     if (isProtectionTriggered) {
-      addMessage("⚠️ ALERT: Protection threshold crossed", "warning");
+      addMessage("⚠️ Protection triggered — your portfolio needs help", "warning");
       setTimeout(() => {
         addMessage(
-          "OBSERVED: Portfolio value dropped beyond safe limit",
+          "Your value dropped beyond your comfort zone",
           "warning"
         );
       }, 600);
       setTimeout(() => {
         addMessage(
-          "DECISION: Activating downside protection protocol",
+          "STEADY is stepping in to protect you right now",
           "action"
         );
       }, 1200);
       setTimeout(() => {
         addMessage(
-          "ACTION: Rebalancing to safer allocation to prevent further loss",
+          "Moving assets to safety to prevent more loss",
           "action"
         );
       }, 1800);
       setTimeout(() => {
         addMessage(
-          "RESULT: Loss prevented. Protection active. You're safe.",
+          "Protection complete. Loss prevented. You're safe.",
           "success"
         );
       }, 2400);

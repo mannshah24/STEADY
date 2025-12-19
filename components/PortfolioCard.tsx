@@ -131,7 +131,7 @@ export default function PortfolioCard() {
     <div className="border border-purple-500/30 rounded-xl p-6 bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-sm shadow-[0_0_30px_rgba(168,85,247,0.15)]">
       {/* Header: Total Value */}
       <div className="mb-6">
-        <p className="text-sm text-gray-500 mb-1">Total Portfolio Value</p>
+        <p className="text-sm text-gray-500 mb-1">What You're Protecting</p>
         <div className="flex items-baseline gap-1 flex-wrap">
           <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             $

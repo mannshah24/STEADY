@@ -198,14 +198,50 @@ export default function ProductClarityPanel() {
         </div>
       </div>
 
-      {/* FAQ Links */}
-      <div className="mt-6 p-3 rounded-lg bg-black/30 border border-gray-700/30">
-        <p className="text-gray-500 text-xs text-center">
-          All smart contract code is open-source and verifiable on-chain.{" "}
-          <span className="text-purple-400">
-            Check the Transparency Panel below for on-chain verification links.
-          </span>
-        </p>
+      {/* Key Questions Answered */}
+      <div className="mt-8 space-y-4">
+        <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+          <span>❓</span>
+          <span>Questions You Might Have</span>
+        </h4>
+        
+        <div className="space-y-3">
+          <div className="p-4 rounded-lg bg-black/40 border border-gray-700/30">
+            <h5 className="text-purple-300 font-semibold mb-2 text-sm">
+              Can STEADY access my funds?
+            </h5>
+            <p className="text-gray-400 text-xs leading-relaxed">
+              No. Your funds stay in your wallet. STEADY uses smart contracts that only YOU can authorize. We can't withdraw, transfer, or access your crypto. It's mathematically impossible.
+            </p>
+          </div>
+          
+          <div className="p-4 rounded-lg bg-black/40 border border-gray-700/30">
+            <h5 className="text-purple-300 font-semibold mb-2 text-sm">
+              Does STEADY guarantee profits?
+            </h5>
+            <p className="text-gray-400 text-xs leading-relaxed">
+              No. We don't predict markets or promise gains. STEADY prevents losses by moving to safety when you're down. It's protection, not a money printer.
+            </p>
+          </div>
+          
+          <div className="p-4 rounded-lg bg-black/40 border border-gray-700/30">
+            <h5 className="text-purple-300 font-semibold mb-2 text-sm">
+              Who decides the protection rules?
+            </h5>
+            <p className="text-gray-400 text-xs leading-relaxed">
+              You do. You choose your Life Mode and risk level. STEADY enforces YOUR rules when you can't watch the markets yourself.
+            </p>
+          </div>
+          
+          <div className="p-4 rounded-lg bg-black/40 border border-gray-700/30">
+            <h5 className="text-purple-300 font-semibold mb-2 text-sm">
+              Is the code open source?
+            </h5>
+            <p className="text-gray-400 text-xs leading-relaxed">
+              Yes. All smart contract code is public and verifiable on-chain. Check the Transparency Panel below for links to verify everything yourself.
+            </p>
+          </div>
+        </div>
       </div>
     </motion.div>
   );

@@ -60,32 +60,32 @@ export default function RiskMeter({ mode, currentValue, peakValue }: Props) {
     switch (riskLevel) {
       case "low":
         return {
-          label: "LOW RISK",
+          label: "VERY SAFE",
           color: "green",
           icon: "🛡️",
           gradient: "from-green-500 to-emerald-500",
           glow: "shadow-[0_0_30px_rgba(34,197,94,0.4)]",
-          description: "Portfolio is well-protected",
+          description: "You're well protected. No worries.",
           percentage: 33,
         };
       case "medium":
         return {
-          label: "MEDIUM RISK",
+          label: "MODERATE",
           color: "yellow",
           icon: "⚠️",
           gradient: "from-yellow-500 to-orange-500",
           glow: "shadow-[0_0_30px_rgba(234,179,8,0.4)]",
-          description: "Monitoring market volatility",
+          description: "Some volatility. Protection is ready.",
           percentage: 66,
         };
       case "high":
         return {
-          label: "HIGH RISK",
+          label: "NEEDS ATTENTION",
           color: "red",
           icon: "🔥",
           gradient: "from-red-500 to-pink-500",
           glow: "shadow-[0_0_30px_rgba(239,68,68,0.4)]",
-          description: "Protection ready to trigger",
+          description: "Higher exposure. Protection may act soon.",
           percentage: 100,
         };
     }
@@ -129,11 +129,11 @@ export default function RiskMeter({ mode, currentValue, peakValue }: Props) {
             {config.icon}
           </motion.span>
           <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Risk Meter
+            Peace of Mind Score
           </h3>
         </div>
         <p className="text-sm text-gray-400">
-          Real-time portfolio risk assessment
+          How protected you are right now
         </p>
       </div>
 

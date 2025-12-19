@@ -83,11 +83,14 @@ export default function AlertsPanel() {
       animate={{ opacity: 1 }}
       className="mb-8"
     >
-      <div className="rounded-xl border border-gray-800 bg-gray-900/30 backdrop-blur-sm p-6">
+      <div className="rounded-xl border border-purple-500/30 bg-gradient-to-br from-purple-500/5 to-pink-500/5 backdrop-blur-sm p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-white">Activity Log</h2>
+          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+            <span>📢</span>
+            <span>What STEADY is Thinking</span>
+          </h2>
           <span className="text-xs text-gray-500">
-            Last {alerts.length} events
+            Recent activity
           </span>
         </div>
 
