@@ -27,11 +27,14 @@ import { motion } from "framer-motion";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Navbar from "@/components/Navbar";
 import HeroStatus from "@/components/HeroStatus";
-import StatusCards from "@/components/StatusCards";
-import DetailsTabs from "@/components/DetailsTabs";
 import PanicButton from "@/components/PanicButton";
 import PortfolioCard from "@/components/PortfolioCard";
 import ActivationFlow from "@/components/ActivationFlow";
+import HeartbeatMonitor from "@/components/HeartbeatMonitor";
+import GuardianAlerts from "@/components/GuardianAlerts";
+import ReasoningStream from "@/components/ReasoningStream";
+import WhySteadyExists from "@/components/WhySteadyExists";
+import NonCustodialProof from "@/components/NonCustodialProof";
 import { fetchPortfolio, toAnchorWallet } from "@/lib/anchor";
 import { getBalance } from "@/lib/solana";
 import { getSolUsdPrice } from "@/lib/pyth";
@@ -151,27 +154,49 @@ function ActivatedDashboard() {
 
       {/* 
         ================================================================
-        MAIN CONTENT - Three-Tier Visual Hierarchy
+        MAIN CONTENT - LIVING GUARDIAN ARCHITECTURE
         ================================================================
+        
+        DESIGN PHILOSOPHY:
+        STEADY must feel ALIVE, not static.
+        It must feel like a GUARDIAN, not a dashboard.
+        It must build TRUST through transparency.
+        It must communicate in HUMAN language.
+        
+        HIERARCHY:
+        PRIMARY - Always visible, emotional, reassuring
+        SECONDARY - Quick-glance information cards
+        TERTIARY - Deep-dive expandable sections
       */}
       <main className="relative z-10 container mx-auto px-4 py-8 max-w-7xl">
         {/* 
           ================================================================
-          PRIMARY LAYER: Life Mode + Portfolio Side-by-Side
-          LEFT: Life Mode selector with heartbeat
-          RIGHT: Portfolio card showing assets & market risk + Panic button below
+          PRIMARY LAYER: Living System Status
           
-          WHY: Life mode context on left, portfolio protection on right
+          PHASE 2: HEARTBEAT - Shows STEADY is alive and watching
+          WHY: Builds trust. Makes platform feel like active guardian.
+          ================================================================
+        */}
+        <section className="mb-8">
+          <HeartbeatMonitor />
+        </section>
+
+        {/* 
+          ================================================================
+          PRIMARY LAYER: Life Mode + Portfolio + Protection
+          
+          PHASE 3: Life Modes feel human and unavoidable
+          WHY: This is THE core value prop. Life-aware protection.
           ================================================================
         */}
         <section id="protection" className="mb-12 scroll-mt-24">
           <div className="grid lg:grid-cols-5 gap-8 items-start">
-            {/* LEFT: Life Mode Section (3/5 width - 60%) */}
+            {/* LEFT: Life Mode Section (3/5 width) */}
             <div className="lg:col-span-3 space-y-6">
-              <HeroStatus />
+              <HeroStatus onModeChange={setCurrentMode} />
             </div>
 
-            {/* RIGHT: Portfolio + Panic Button (2/5 width - 40%) */}
+            {/* RIGHT: Portfolio + Panic Button (2/5 width) */}
             <div className="lg:col-span-2 space-y-6">
               <PortfolioCard />
               <PanicButton
@@ -182,39 +207,68 @@ function ActivatedDashboard() {
           </div>
         </section>
 
+        {/* 
+          ================================================================
+          SECONDARY LAYER: Guardian Intelligence
+          
+          PHASE 4 & 5: Alerts + Reasoning
+          WHY: Shows what STEADY sees and thinks. Builds psychological trust.
+          ================================================================
+        */}
+        <section className="mb-12">
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* PHASE 4: Guardian Alerts */}
+            <div className="bg-gray-900/40 backdrop-blur-sm border border-gray-800/50 rounded-2xl p-6">
+              <GuardianAlerts />
+            </div>
 
+            {/* PHASE 5: Reasoning Stream */}
+            <div className="bg-gray-900/40 backdrop-blur-sm border border-gray-800/50 rounded-2xl p-6">
+              <ReasoningStream />
+            </div>
+          </div>
+        </section>
 
         {/* 
           ================================================================
-          TERTIARY LAYER: Expandable Details
-          - Activity log & reasoning
-          - Protection timeline
-          - Transparency/verification
-          - FAQ & about
+          TERTIARY LAYER: Trust & Education
           
-          WHY: All functionality preserved but tucked away.
-          Default CLOSED to reduce visual noise.
-          Users who want depth can expand.
+          PHASE 7: Competition Crushers
+          WHY: Establishes STEADY as inevitable, not experimental
           ================================================================
         */}
-        <section className="mb-16">
-          <DetailsTabs currentMode={currentMode} currentValue={currentValue} />
+        <section className="mb-12 space-y-12">
+          {/* Why STEADY Exists */}
+          <WhySteadyExists />
+
+          {/* Non-Custodial Proof */}
+          <NonCustodialProof />
         </section>
       </main>
 
       {/* 
-        FOOTER: Minimal, calm, trustworthy
+        FOOTER: Professional, Trustworthy, Human
       */}
-      <footer className="relative z-10 border-t border-gray-800/50 bg-black/30">
-        <div className="container mx-auto px-4 py-10 max-w-5xl">
-          <div className="text-center space-y-3">
-            <p className="text-xl font-semibold text-gray-300">STEADY</p>
-            <p className="text-sm text-gray-500">
-              Non-custodial protection • Always transparent • Built on Solana
+      <footer className="relative z-10 border-t border-gray-800/50 bg-black/30 backdrop-blur-sm">
+        <div className="container mx-auto px-4 py-12 max-w-7xl">
+          <div className="text-center space-y-4">
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              STEADY
+            </h3>
+            <p className="text-sm text-gray-400 max-w-2xl mx-auto leading-relaxed">
+              A life-aware, non-custodial crypto protection platform that
+              protects users when they're asleep, busy, emotional, or offline.
             </p>
-            <p className="text-xs text-gray-600 max-w-lg mx-auto leading-relaxed">
-              STEADY reduces downside risk — it doesn't promise profits. Crypto
-              is inherently risky. Invest responsibly.
+            <div className="flex items-center justify-center gap-6 text-xs text-gray-500">
+              <span>Non-custodial protection</span>
+              <span>•</span>
+              <span>Always transparent</span>
+              <span>•</span>
+              <span>Built on Solana</span>
+            </div>
+            <p className="text-xs text-gray-600 max-w-lg mx-auto pt-4 border-t border-gray-800/50 mt-6">
+              STEADY reduces downside risk. It does not guarantee profits.
+              Crypto is inherently volatile. Invest responsibly.
             </p>
           </div>
         </div>

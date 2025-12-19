@@ -237,9 +237,7 @@ export default function PortfolioCard() {
 
       {/* Market Risk Section */}
       <div className="mt-4 pt-3 border-t border-gray-800">
-        <p className="text-xs font-semibold text-gray-400 mb-2">
-          Market Risk
-        </p>
+        <p className="text-xs font-semibold text-gray-400 mb-2">Market Risk</p>
 
         <div className="space-y-2">
           {/* Risk Level Indicator */}
@@ -298,7 +296,9 @@ export default function PortfolioCard() {
           {/* Protection Floor */}
           <div className="p-2 rounded-lg bg-green-500/10 border border-green-500/30">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] text-gray-400">Protection Floor</span>
+              <span className="text-[10px] text-gray-400">
+                Protection Floor
+              </span>
               <span className="text-xs font-bold text-green-400">
                 ${(portfolio.totalValue * 0.9).toFixed(2)}
               </span>
