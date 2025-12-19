@@ -16,10 +16,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import {
-  onMarketStateUpdate,
-  type MarketState,
-} from "@/lib/marketLoop";
+import { onMarketStateUpdate, type MarketState } from "@/lib/marketLoop";
 
 export default function RiskSummary() {
   const [marketState, setMarketState] = useState<MarketState>({

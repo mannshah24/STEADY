@@ -189,7 +189,6 @@ function ActivatedDashboard() {
         ❌ NOT boring, empty, static, or generic
       */}
       <main className="relative z-10 container mx-auto px-4 py-8 max-w-7xl">
-        
         {/* ============================================================
             TOP LAYER: Life Mode + Heartbeat + Panic Button
             WHY: This is THE experience. Life-aware protection is the 
@@ -240,7 +239,6 @@ function ActivatedDashboard() {
             This gives both without cluttering the main experience.
             ============================================================ */}
         <ExpandableSections />
-
       </main>
 
       {/* 
@@ -254,7 +252,8 @@ function ActivatedDashboard() {
               STEADY
             </h3>
             <p className="text-sm text-gray-400 max-w-2xl mx-auto leading-relaxed">
-              Life-aware crypto protection. Sleep peacefully while STEADY watches for you.
+              Life-aware crypto protection. Sleep peacefully while STEADY
+              watches for you.
             </p>
             <div className="flex items-center justify-center gap-6 text-xs text-gray-500">
               <span>Non-custodial</span>
@@ -276,12 +275,12 @@ function ActivatedDashboard() {
 
 /**
  * ExpandableSections - Collapsible BOTTOM LAYER
- * 
+ *
  * WHY THIS EXISTS:
  * Some users want to dive deep. Others just want to see their protection status.
  * This collapsible section gives power users access to details without cluttering
  * the main experience. Each section expands individually.
- * 
+ *
  * INCLUDES:
  * - Guardian Alerts History
  * - Reasoning Stream (what STEADY is thinking)
@@ -354,9 +353,7 @@ function ExpandableSections() {
     <section className="mb-12 space-y-4">
       {/* Section Header */}
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-white mb-2">
-          Dive Deeper
-        </h2>
+        <h2 className="text-2xl font-bold text-white mb-2">Dive Deeper</h2>
         <p className="text-gray-400 text-sm">
           Curious about the details? Expand any section below.
         </p>
@@ -380,9 +377,7 @@ function ExpandableSections() {
                   <h3 className="text-lg font-semibold text-white">
                     {section.title}
                   </h3>
-                  <p className="text-sm text-gray-400">
-                    {section.description}
-                  </p>
+                  <p className="text-sm text-gray-400">{section.description}</p>
                 </div>
               </div>
               <motion.div
@@ -404,9 +399,7 @@ function ExpandableSections() {
                   transition={{ duration: 0.3 }}
                   className="border-t border-gray-800/50"
                 >
-                  <div className="p-6">
-                    {section.component}
-                  </div>
+                  <div className="p-6">{section.component}</div>
                 </motion.div>
               )}
             </AnimatePresence>

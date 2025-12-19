@@ -16,14 +16,13 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import {
-  onMarketStateUpdate,
-  type MarketState,
-} from "@/lib/marketLoop";
+import { onMarketStateUpdate, type MarketState } from "@/lib/marketLoop";
 import { getCurrentLifeMode } from "@/lib/lifeModeEngine";
 
 export default function AIAdvisor() {
-  const [recommendation, setRecommendation] = useState("Analyzing market conditions...");
+  const [recommendation, setRecommendation] = useState(
+    "Analyzing market conditions..."
+  );
   const [confidence, setConfidence] = useState("medium");
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -50,40 +49,40 @@ export default function AIAdvisor() {
 
   const generateRecommendation = (state: MarketState) => {
     setIsUpdating(true);
-    
+
     setTimeout(() => {
       const lifeMode = getCurrentLifeMode();
       const hour = new Date().getHours();
 
       // Generate HUMAN recommendations based on context
       if (state.riskLevel === "critical") {
-      setRecommendation(
-        "Markets are stressed right now. Consider switching to Sleep Mode if you're stepping away."
-      );
-      setConfidence("high");
-    } else if (state.riskLevel === "high") {
-      setRecommendation(
-        "Volatility is picking up. STEADY is watching closely for you."
-      );
-      setConfidence("medium");
-    } else if (hour >= 22 || hour <= 6) {
-      setRecommendation(
-        "It's late. Consider Sleep Mode for enhanced protection overnight."
-      );
-      setConfidence("medium");
-    } else if (lifeMode === "growth" && state.riskLevel === "low") {
-      setRecommendation(
-        "Market is calm. Growth Mode is working well right now."
-      );
-      setConfidence("high");
-    } else {
-      setRecommendation(
-        "Everything looks good. No changes needed at the moment."
-      );
-      setConfidence("low");
-    }
-    
-    setIsUpdating(false);
+        setRecommendation(
+          "Markets are stressed right now. Consider switching to Sleep Mode if you're stepping away."
+        );
+        setConfidence("high");
+      } else if (state.riskLevel === "high") {
+        setRecommendation(
+          "Volatility is picking up. STEADY is watching closely for you."
+        );
+        setConfidence("medium");
+      } else if (hour >= 22 || hour <= 6) {
+        setRecommendation(
+          "It's late. Consider Sleep Mode for enhanced protection overnight."
+        );
+        setConfidence("medium");
+      } else if (lifeMode === "growth" && state.riskLevel === "low") {
+        setRecommendation(
+          "Market is calm. Growth Mode is working well right now."
+        );
+        setConfidence("high");
+      } else {
+        setRecommendation(
+          "Everything looks good. No changes needed at the moment."
+        );
+        setConfidence("low");
+      }
+
+      setIsUpdating(false);
     }, 300);
   };
 
@@ -136,9 +135,7 @@ export default function AIAdvisor() {
             transition={{ duration: 2, repeat: Infinity }}
             className="w-1.5 h-1.5 rounded-full bg-cyan-500"
           />
-          <p className="text-xs text-gray-500">
-            Updates every 20-40 seconds
-          </p>
+          <p className="text-xs text-gray-500">Updates every 20-40 seconds</p>
         </div>
       </div>
     </motion.div>

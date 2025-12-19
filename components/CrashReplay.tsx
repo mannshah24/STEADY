@@ -162,9 +162,9 @@ export default function CrashReplay() {
                     </h4>
                   </div>
                   <span
-                    className={`text-lg font-bold ${getStatusColor(
-                      event.status
-                    ).split(" ")[0]}`}
+                    className={`text-lg font-bold ${
+                      getStatusColor(event.status).split(" ")[0]
+                    }`}
                   >
                     {event.price}
                   </span>

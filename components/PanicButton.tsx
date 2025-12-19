@@ -4,7 +4,10 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useConnection } from "@solana/wallet-adapter-react";
-import { setLifeModeWithNotification, type LifeMode } from "@/lib/lifeModeEngine";
+import {
+  setLifeModeWithNotification,
+  type LifeMode,
+} from "@/lib/lifeModeEngine";
 
 interface Props {
   currentMode: LifeMode;
@@ -109,7 +112,7 @@ export default function PanicButton({ currentMode, onModeChange }: Props) {
               >
                 🚨
               </motion.div>
-              
+
               <motion.h2
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -118,7 +121,7 @@ export default function PanicButton({ currentMode, onModeChange }: Props) {
               >
                 Activate Panic Mode?
               </motion.h2>
-              
+
               <motion.p
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -127,7 +130,7 @@ export default function PanicButton({ currentMode, onModeChange }: Props) {
               >
                 Maximum protection. Immediate action.
               </motion.p>
-              
+
               <motion.p
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}

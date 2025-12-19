@@ -45,7 +45,7 @@ interface Props {
 export default function HeroStatus({ onModeChange }: Props) {
   const [currentMode, setCurrentMode] = useState<LifeMode>("growth");
   const [isChanging, setIsChanging] = useState(false);
-  const [showModeSelector, setShowModeSelector] = useState(false);
+  const [showModeSelector, setShowModeSelector] = useState(true); // Changed to true by default
 
   // Heartbeat state
   const [isActive, setIsActive] = useState(false);
@@ -209,13 +209,27 @@ export default function HeroStatus({ onModeChange }: Props) {
             onClick={() => setShowModeSelector(!showModeSelector)}
             className="px-5 py-2.5 rounded-full bg-gray-800/60 border border-gray-700/50 
                        text-gray-300 text-sm hover:bg-gray-700/60 hover:border-gray-600/50 
-                       transition-all duration-200"
+                       transition-all duration-200 flex items-center gap-2"
           >
-            {showModeSelector ? "Close" : "Change Life Mode"}
+            {showModeSelector ? (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+                </svg>
+                Hide Life Modes
+              </>
+            ) : (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+                Show All Modes
+              </>
+            )}
           </button>
         </div>
 
-        {/* Mode Selector - Expandable, Clean */}
+        {/* Mode Selector - Visible by default with better design */}
         {showModeSelector && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
@@ -223,7 +237,10 @@ export default function HeroStatus({ onModeChange }: Props) {
             exit={{ opacity: 0, height: 0 }}
             className="mt-8 pt-8 border-t border-gray-800/50"
           >
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <h3 className="text-center text-sm text-gray-400 mb-4 font-medium">
+              Choose your protection mode based on what you're doing
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {(Object.keys(LIFE_MODES) as LifeMode[]).map((modeKey) => {
                 const mode = LIFE_MODES[modeKey];
                 const isSelected = currentMode === modeKey;
@@ -234,26 +251,36 @@ export default function HeroStatus({ onModeChange }: Props) {
                     onClick={() => handleModeChange(modeKey)}
                     disabled={isChanging}
                     className={`
-                      p-4 rounded-xl text-center transition-all duration-200
+                      relative p-5 rounded-xl text-center transition-all duration-200
                       ${
                         isSelected
-                          ? `bg-${mode.color}-500/20 border-2 border-${mode.color}-500/50`
-                          : "bg-gray-800/40 border border-gray-700/30 hover:bg-gray-700/40"
+                          ? `bg-${mode.color}-500/20 border-2 border-${mode.color}-500/60 shadow-lg shadow-${mode.color}-500/20`
+                          : "bg-gray-800/50 border border-gray-700/40 hover:bg-gray-700/50 hover:border-gray-600/60"
                       }
                       ${
                         isChanging
                           ? "opacity-50 cursor-not-allowed"
-                          : "cursor-pointer"
+                          : "cursor-pointer hover:scale-105"
                       }
                     `}
                   >
-                    <span className="text-2xl block mb-2">{mode.emoji}</span>
+                    {/* Active indicator */}
+                    {isSelected && (
+                      <div className="absolute top-2 right-2">
+                        <div className={`w-2 h-2 rounded-full bg-${mode.color}-400 animate-pulse`} />
+                      </div>
+                    )}
+                    
+                    <span className="text-3xl block mb-2">{mode.emoji}</span>
                     <span
-                      className={`text-sm font-medium ${
+                      className={`text-sm font-semibold block mb-1 ${
                         isSelected ? mode.textColor : "text-gray-300"
                       }`}
                     >
                       {mode.label.replace(" Mode", "")}
+                    </span>
+                    <span className="text-xs text-gray-500 block">
+                      {mode.drawdownThreshold}% protection trigger
                     </span>
                   </button>
                 );

@@ -155,9 +155,46 @@
 
 /* Wallet Adapter Overrides */
 .wallet-adapter-button {
-  @apply bg-neon-pink hover:bg-neon-purple transition-colors;
+  @apply bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 transition-all duration-300;
+  border: none !important;
+  border-radius: 0.5rem !important;
+  font-weight: 600 !important;
+}
+
+.wallet-adapter-button:not([disabled]):hover {
+  @apply shadow-[0_0_20px_rgba(0,217,255,0.4)];
 }
 
 .wallet-adapter-modal-wrapper {
-  @apply bg-black/90 backdrop-blur-sm;
+  @apply bg-black/95 backdrop-blur-md;
+}
+
+.wallet-adapter-modal {
+  @apply bg-gray-900 border border-cyan-500/30 rounded-xl;
+  box-shadow: 0 0 40px rgba(0, 217, 255, 0.2);
+}
+
+.wallet-adapter-modal-title {
+  @apply text-white text-xl font-bold;
+}
+
+.wallet-adapter-modal-list {
+  @apply gap-2;
+}
+
+.wallet-adapter-modal-list-more {
+  @apply border-gray-700 hover:border-cyan-500/50;
+}
+
+.wallet-adapter-button-trigger {
+  @apply bg-gray-800 hover:bg-gray-700 border border-gray-600 hover:border-cyan-500/50 transition-all duration-300;
+}
+
+/* Wallet Modal Close Button */
+.wallet-adapter-modal-button-close {
+  @apply text-gray-400 hover:text-white transition-colors;
+}
+
+.wallet-adapter-modal-button-close:hover {
+  @apply bg-gray-800;
 }

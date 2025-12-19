@@ -9,23 +9,77 @@
 
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getBalance } from "@/lib/solana";
 import { resetSteady } from "@/lib/steadyState";
 
 export default function WalletConnect() {
-  const { publicKey, connected, disconnect } = useWallet();
+  const { publicKey, connected, disconnect, connecting, wallet } = useWallet();
   const { setVisible } = useWalletModal();
   const [balance, setBalance] = useState<number | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Fetch balance when wallet connects
   useEffect(() => {
-    if (connected && publicKey) {
-      getBalance(publicKey).then(setBalance);
-    } else {
-      setBalance(null);
-    }
+    let isSubscribed = true;
+    
+    const fetchBalance = async () => {
+      if (connected && publicKey && isSubscribed) {
+        try {
+          const bal = await getBalance(publicKey);
+          if (isSubscribed) {
+            setBalance(bal);
+          }
+        } catch (error) {
+          console.error("Failed to fetch balance:", error);
+          if (isSubscribed) {
+            setBalance(null);
+          }
+        }
+      } else if (!connected && isSubscribed) {
+        setBalance(null);
+      }
+    };
+
+    fetchBalance();
+    
+    // Refresh balance every 30 seconds when connected
+    const interval = connected ? setInterval(fetchBalance, 30000) : undefined;
+
+    return () => {
+      isSubscribed = false;
+      if (interval) clearInterval(interval);
+    };
   }, [connected, publicKey]);
+
+  // Manual balance refresh
+  const refreshBalance = useCallback(async () => {
+    if (connected && publicKey && !isRefreshing) {
+      setIsRefreshing(true);
+      try {
+        const bal = await getBalance(publicKey);
+        setBalance(bal);
+      } catch (error) {
+        console.error("Failed to refresh balance:", error);
+      } finally {
+        setTimeout(() => setIsRefreshing(false), 1000);
+      }
+    }
+  }, [connected, publicKey, isRefreshing]);
+
+  // Handle disconnect with cleanup
+  const handleDisconnect = useCallback(async () => {
+    try {
+      await disconnect();
+      setBalance(null);
+      // Clear wallet from localStorage
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("steady-wallet");
+      }
+    } catch (error) {
+      console.error("Error disconnecting wallet:", error);
+    }
+  }, [disconnect]);
 
   // Format wallet address (first 4 and last 4 characters)
   const shortenAddress = (address: string) => {
@@ -38,6 +92,7 @@ export default function WalletConnect() {
         // Connect Button - Premium neon glow design with smooth transitions
         <button
           onClick={() => setVisible(true)}
+          disabled={connecting}
           className="
             relative px-6 py-2.5 rounded-lg font-semibold
             bg-gradient-to-r from-cyan-500 to-purple-600
@@ -46,9 +101,22 @@ export default function WalletConnect() {
             hover:scale-105 hover:shadow-[0_0_30px_rgba(0,217,255,0.5)]
             active:scale-95
             shadow-[0_0_15px_rgba(0,217,255,0.3)]
+            disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100
           "
         >
-          <span className="relative z-10">Connect Wallet</span>
+          <span className="relative z-10 flex items-center gap-2">
+            {connecting ? (
+              <>
+                <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Connecting...
+              </>
+            ) : (
+              "Connect Wallet"
+            )}
+          </span>
 
           {/* Animated border glow */}
           <div
@@ -65,10 +133,29 @@ export default function WalletConnect() {
         <div className="flex items-center gap-3">
           {/* Balance Display */}
           {balance !== null && (
-            <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gray-900 border border-cyan-500/30 rounded-lg">
+            <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gray-900 border border-cyan-500/30 rounded-lg group hover:border-cyan-500/60 transition-all">
               <span className="text-cyan-400 font-mono text-sm font-semibold">
                 {balance.toFixed(3)} SOL
               </span>
+              <button
+                onClick={refreshBalance}
+                disabled={isRefreshing}
+                className="text-cyan-500/50 hover:text-cyan-400 transition-colors disabled:opacity-50"
+                title="Refresh balance"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-3.5 w-3.5 ${isRefreshing ? 'animate-spin' : ''}`}
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
             </div>
           )}
 
@@ -100,9 +187,7 @@ export default function WalletConnect() {
 
             {/* Disconnect button */}
             <button
-              onClick={async () => {
-                await disconnect();
-              }}
+              onClick={handleDisconnect}
               className="ml-1 text-gray-500 hover:text-red-400 transition-colors duration-300"
               title="Disconnect"
             >
