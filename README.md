@@ -1,5 +1,9 @@
 # STEADY 🛡️
 
+deployment link : https://steady-ebon.vercel.app/
+
+video demo link : https://youtu.be/bKHDElOPBNI
+
 **Life-Aware Crypto Protection**
 
 > STEADY protects crypto holders when life gets in the way — when you're asleep, busy, emotional, or offline.
